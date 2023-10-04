@@ -30,6 +30,6 @@ namespace CentroEducativoAPISQL.Modelos
         [ForeignKey("id_usuario")]
 
         [JsonIgnore]
-        public Usuarios? Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
     }
 }

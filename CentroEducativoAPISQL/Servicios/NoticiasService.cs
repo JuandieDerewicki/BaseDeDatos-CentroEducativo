@@ -16,18 +16,18 @@ namespace CentroEducativoAPISQL.Servicios
         }
         
         // Metodo que obtiene lista de todas las noticias almacenadas en la BD
-        public async Task<List<Noticias>> ObtenerTodasNoticiasAsync()
+        public async Task<List<Noticia>> ObtenerTodasNoticiasAsync()
         {
             return await _context.Noticias.ToListAsync();
         }
 
         // Buscar noticia por id
-        public async Task<Noticias> ObtenerNoticiaPorIdAsync(int id)
+        public async Task<Noticia> ObtenerNoticiaPorIdAsync(int id)
         {
             return await _context.Noticias.FirstOrDefaultAsync(n => n.id_noticia == id);
         }
 
-        public async Task<List<Noticias>> ObtenerNoticiasPorUsuarioAsync(string idUsuario)
+        public async Task<List<Noticia>> ObtenerNoticiasPorUsuarioAsync(string idUsuario)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace CentroEducativoAPISQL.Servicios
                 throw new Exception("Error al obtener las noticias del usuario.", ex);
             }
         }
-        public async Task<Noticias> CrearNoticia(Noticias noticia, string idUsuario)
+        public async Task<Noticia> CrearNoticia(Noticia noticia, string idUsuario)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace CentroEducativoAPISQL.Servicios
             }
         }
 
-        public async Task<Noticias> EditarNoticia(int id, Noticias noticia, string idUsuario)
+        public async Task<Noticia> EditarNoticia(int id, Noticia noticia, string idUsuario)
         {
             try
             {
@@ -227,11 +227,11 @@ namespace CentroEducativoAPISQL.Servicios
     // La interfaz INoticiasService define los métodos que debe implementar NoticiasService y proporciona una abstracción para interactuar con los datos de las noticias.
     public interface INoticiasService
     {
-        Task<List<Noticias>> ObtenerTodasNoticiasAsync();
-        Task<Noticias> ObtenerNoticiaPorIdAsync(int id);
-        Task<List<Noticias>> ObtenerNoticiasPorUsuarioAsync(string dni);
-        Task<Noticias> CrearNoticia(Noticias noticia, string idUsuario);
-        Task<Noticias> EditarNoticia(int id, Noticias noticia, string usuario);
+        Task<List<Noticia>> ObtenerTodasNoticiasAsync();
+        Task<Noticia> ObtenerNoticiaPorIdAsync(int id);
+        Task<List<Noticia>> ObtenerNoticiasPorUsuarioAsync(string dni);
+        Task<Noticia> CrearNoticia(Noticia noticia, string idUsuario);
+        Task<Noticia> EditarNoticia(int id, Noticia noticia, string usuario);
         Task<string> EliminarNoticia(int id,string usuario);
     }
 }

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace CentroEducativoAPISQL.Modelos
 {
-    public class Noticias
+    public class Noticia
     {
         [Key]
         public int id_noticia { get; set; } // Clave Primaria
@@ -30,10 +30,10 @@ namespace CentroEducativoAPISQL.Modelos
         [ForeignKey("id_usuario")] // Clave Foranea que establece la relacion entre la noticia y el usuario que la creo
 
         [JsonIgnore]
-        public Usuarios? Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
         [JsonIgnore]
-        public ICollection<Comentarios>? Comentarios { get; set; } // Coleccion de comentarios que indicia que una noticia puede tener varios comentarios asociados 
+        public ICollection<Comentario>? Comentarios { get; set; } // Coleccion de comentarios que indicia que una noticia puede tener varios comentarios asociados 
 
     }
 }

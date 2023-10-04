@@ -16,18 +16,18 @@ namespace CentroEducativoAPISQL.Servicios
             _rolesService = rolesService;
         }
         // Obtiene la lista de todos los usuarios almacenados en la BD y recupera todos los usuarios con sus roles asociados
-        public async Task<List<Usuarios>> ObtenerTodosUsuariosAsync()
+        public async Task<List<Usuario>> ObtenerTodosUsuariosAsync()
         {
             return await _context.Usuarios.Include(u => u.RolesUsuarios).ToListAsync();
         }
         
         // Busca un usuario por su dni en la BD
-        public async Task<Usuarios> ObtenerUsuarioPorDocumentoAsync(string documento)
+        public async Task<Usuario> ObtenerUsuarioPorDocumentoAsync(string documento)
         {
             return await _context.Usuarios.Include(u => u.RolesUsuarios).FirstOrDefaultAsync(u => u.dni == documento);
         }
 
-        public async Task<Usuarios> RegistrarUsuarioAsync(Usuarios usuario, string tipoUsuario)
+        public async Task<Usuario> RegistrarUsuarioAsync(Usuario usuario, string tipoUsuario)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace CentroEducativoAPISQL.Servicios
 
                 if (rol == null)
                 {
-                    rol = new Roles { tipo_rol = tipoUsuario };
+                    rol = new Rol { tipo_rol = tipoUsuario };
                     await _rolesService.CrearRolAsync(rol); // Crea el rol en la base de datos
                 }
 
@@ -70,7 +70,7 @@ namespace CentroEducativoAPISQL.Servicios
         }
 
 
-        public async Task<Usuarios> EditarUsuarioAsync(int dni, Usuarios usuario)
+        public async Task<Usuario> EditarUsuarioAsync(int dni, Usuario usuario)
         {
             string dniStr = dni.ToString();
             // Verificar que el DNI del usuario a editar coincide con el DNI en el objeto usuario
@@ -101,7 +101,7 @@ namespace CentroEducativoAPISQL.Servicios
 
                     if (rol == null)
                     {
-                        rol = new Roles { tipo_rol = tipoUsuario };
+                        rol = new Rol { tipo_rol = tipoUsuario };
                         await _rolesService.CrearRolAsync(rol); // Crea el rol en la base de datos
                     }
 
@@ -143,10 +143,10 @@ namespace CentroEducativoAPISQL.Servicios
     //  define los métodos que debe implementar UsuariosService y proporciona una abstracción para interactuar con la entidad de Usuarios.
     public interface IUsuariosService
     {
-        Task<List<Usuarios>> ObtenerTodosUsuariosAsync();
-        Task<Usuarios> ObtenerUsuarioPorDocumentoAsync(string documento);
+        Task<List<Usuario>> ObtenerTodosUsuariosAsync();
+        Task<Usuario> ObtenerUsuarioPorDocumentoAsync(string documento);
         Task EliminarUsuarioAsync(string documento);
-        Task<Usuarios> RegistrarUsuarioAsync(Usuarios usuario, string tipoUsuario);
-        Task<Usuarios> EditarUsuarioAsync(int dni, Usuarios usuario);
+        Task<Usuario> RegistrarUsuarioAsync(Usuario usuario, string tipoUsuario);
+        Task<Usuario> EditarUsuarioAsync(int dni, Usuario usuario);
     }
 }

@@ -25,14 +25,14 @@ namespace CentroEducativoAPISQL.Controllers
 
         // Obtiene lista de los todos los usuarios y lo devuelve en una respuesta HTTP
         [HttpGet]
-        public async Task<ActionResult<List<Usuarios>>> ObtenerTodosUsuariosAsync()
+        public async Task<ActionResult<List<Usuario>>> ObtenerTodosUsuariosAsync()
         {
             var usuarios = await _usuariosService.ObtenerTodosUsuariosAsync();
             return Ok(usuarios);
         }
         // Lo mismo que el anterior pero busca por documento
         [HttpGet("ObtenerUsuariosPorDni/{dni}")]
-        public async Task<ActionResult<Usuarios>> ObtenerUsuarioPorDocumentoAsync(string dni)
+        public async Task<ActionResult<Usuario>> ObtenerUsuarioPorDocumentoAsync(string dni)
         {
             var usuario = await _usuariosService.ObtenerUsuarioPorDocumentoAsync(dni);
 
@@ -45,7 +45,7 @@ namespace CentroEducativoAPISQL.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Usuarios>> RegistrarUsuarioAsync(Usuarios usuario)
+        public async Task<ActionResult<Usuario>> RegistrarUsuarioAsync(Usuario usuario)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace CentroEducativoAPISQL.Controllers
 
                     if (rol == null)
                     {
-                        rol = new Roles { tipo_rol = tipoUsuario };
+                        rol = new Rol { tipo_rol = tipoUsuario };
                         await _rolesService.CrearRolAsync(rol); // Crea el rol en la base de datos
                     }
 
@@ -81,7 +81,7 @@ namespace CentroEducativoAPISQL.Controllers
 
 
         [HttpPut("{dni}")]
-        public async Task<ActionResult<Usuarios>> EditarUsuarioAsync(int dni, Usuarios usuario)
+        public async Task<ActionResult<Usuario>> EditarUsuarioAsync(int dni, Usuario usuario)
         {
             string dniStr = dni.ToString();
 
@@ -102,7 +102,7 @@ namespace CentroEducativoAPISQL.Controllers
 
                     if (rol == null)
                     {
-                        rol = new Roles { tipo_rol = tipoUsuario };
+                        rol = new Rol { tipo_rol = tipoUsuario };
                         await _rolesService.CrearRolAsync(rol); // Crea el rol en la base de datos
                     }
 

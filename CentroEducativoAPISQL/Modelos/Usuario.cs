@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CentroEducativoAPISQL.Modelos
 {
-    public class Usuarios
+    public class Usuario
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -22,7 +23,7 @@ namespace CentroEducativoAPISQL.Modelos
         public string correo { get; set; }
 
         [Required]
-        public string fechaNacimientoSolicitante { get; set; }
+        public string fechaNacimiento { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -35,15 +36,27 @@ namespace CentroEducativoAPISQL.Modelos
         public int id_rol { get; set; } 
 
         [ForeignKey("id_rol")] // Clave Foranea para relacionar un Usuario con su rol en la tabla "Roles"
-        public Roles RolesUsuarios { get; set; } // Representa la relación de navegación a Roles a través de la clave foránea id_rol. Esto permite acceder al rol asociado a un usuario directamente desde un objeto Usuarios.
+        public Rol RolesUsuarios { get; set; } // Representa la relación de navegación a Roles a través de la clave foránea id_rol. Esto permite acceder al rol asociado a un usuario directamente desde un objeto Usuarios.
 
-        // Estas propiedades representan colecciones de comentarios, solicitudes de inscripción y noticias que están asociadas a un usuario. Esto indica que un usuario puede tener varios comentarios, solicitudes de inscripción y noticias.
+        public int id_curso { get; set; }   
+
+        [ForeignKey("id_curso")]
+
+        public Curso? Cursos { get; set; }
+
+        public int id_clase {  get; set; }
+
+        [ForeignKey("id_clase")]
+        public Clase? clase { get; set; }
 
         [JsonIgnore]
-        public ICollection<Comentarios>? Comentarios { get; set; }
+        public ICollection<Pago>? Pagos { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Comentario>? Comentarios { get; set; }
         [JsonIgnore]
         public ICollection<SolicitudInscripcion>? SolicitudesInscripcion { get; set; }
         [JsonIgnore]
-        public ICollection<Noticias>? Noticias { get; set; }
+        public ICollection<Noticia>? Noticias { get; set; }
     }
 }

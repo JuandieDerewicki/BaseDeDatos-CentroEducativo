@@ -15,18 +15,18 @@ namespace CentroEducativoAPISQL.Servicios
         }
 
         // Permite obtener lista de todos los comentarios almacenedos en la BD
-        public async Task<List<Comentarios>> ObtenerTodosComentariosAsync()
+        public async Task<List<Comentario>> ObtenerTodosComentariosAsync()
         {
             return await _context.Comentarios.ToListAsync();
         }
 
         // Obtiene comentario por ID
-        public async Task<Comentarios> ObtenerComentarioPorIdAsync(int id)
+        public async Task<Comentario> ObtenerComentarioPorIdAsync(int id)
         {
             return await _context.Comentarios.FirstOrDefaultAsync(c => c.id_comentario == id);
         }
 
-        public async Task<List<Comentarios>> ObtenerComentariosPorDniUsuario(string dniUsuario)
+        public async Task<List<Comentario>> ObtenerComentariosPorDniUsuario(string dniUsuario)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace CentroEducativoAPISQL.Servicios
             }
         }
 
-        public async Task<List<Comentarios>> ObtenerComentariosPorNombreUsuario(string nombre)
+        public async Task<List<Comentario>> ObtenerComentariosPorNombreUsuario(string nombre)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace CentroEducativoAPISQL.Servicios
 
 
 
-        public async Task<Comentarios> AgregarComentario(Comentarios comentario)
+        public async Task<Comentario> AgregarComentario(Comentario comentario)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace CentroEducativoAPISQL.Servicios
 
 
 
-        public async Task<Comentarios> EditarComentario(int id, Comentarios comentario)
+        public async Task<Comentario> EditarComentario(int id, Comentario comentario)
         {
             try
             {
@@ -160,12 +160,12 @@ namespace CentroEducativoAPISQL.Servicios
     // La interfaz IComentariosService define los métodos que debe implementar ComentariosService y proporciona una abstracción para interactuar con los datos de los comentarios.
     public interface IComentariosService
     {
-        Task<List<Comentarios>> ObtenerTodosComentariosAsync();
-        Task<Comentarios> ObtenerComentarioPorIdAsync(int id);
-        Task<List<Comentarios>> ObtenerComentariosPorNombreUsuario(string nombreUsuario);
-        Task<List<Comentarios>> ObtenerComentariosPorDniUsuario(string dniUsuario);
-        Task<Comentarios> AgregarComentario(Comentarios comentario);
-        Task<Comentarios> EditarComentario(int id, Comentarios comentario);
+        Task<List<Comentario>> ObtenerTodosComentariosAsync();
+        Task<Comentario> ObtenerComentarioPorIdAsync(int id);
+        Task<List<Comentario>> ObtenerComentariosPorNombreUsuario(string nombreUsuario);
+        Task<List<Comentario>> ObtenerComentariosPorDniUsuario(string dniUsuario);
+        Task<Comentario> AgregarComentario(Comentario comentario);
+        Task<Comentario> EditarComentario(int id, Comentario comentario);
         Task<string> EliminarComentario(int id);
 
     }

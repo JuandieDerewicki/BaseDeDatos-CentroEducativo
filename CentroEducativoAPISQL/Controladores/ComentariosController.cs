@@ -21,7 +21,7 @@ namespace CentroEducativoAPISQL.Controllers
 
         // Obtiene los comentarios y devuelve rta en HTTP
         [HttpGet]
-        public async Task<ActionResult<List<Comentarios>>> ObtenerTodosComentariosAsync()
+        public async Task<ActionResult<List<Comentario>>> ObtenerTodosComentariosAsync()
         {
             var comentarios = await _comentariosService.ObtenerTodosComentariosAsync();
             return Ok(comentarios);
@@ -29,7 +29,7 @@ namespace CentroEducativoAPISQL.Controllers
 
         // Obtiene comentarios por id y devuelve rta en HTTP
         [HttpGet("ObtenerComentariosPorId/{id}")]
-        public async Task<ActionResult<Comentarios>> ObtenerComentarioPorIdAsync(int id)
+        public async Task<ActionResult<Comentario>> ObtenerComentarioPorIdAsync(int id)
         {
             var comentario = await _comentariosService.ObtenerComentarioPorIdAsync(id);
             if (comentario == null)
@@ -69,7 +69,7 @@ namespace CentroEducativoAPISQL.Controllers
         }
 
         [HttpPost("AgregarComentario")]
-        public async Task<IActionResult> AgregarComentario([FromBody] Comentarios comentario)
+        public async Task<IActionResult> AgregarComentario([FromBody] Comentario comentario)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace CentroEducativoAPISQL.Controllers
         }
 
         [HttpPut("EditarComentario/{id}")]
-        public async Task<IActionResult> EditarComentario(int id, Comentarios comentario)
+        public async Task<IActionResult> EditarComentario(int id, Comentario comentario)
         {
             try
             {

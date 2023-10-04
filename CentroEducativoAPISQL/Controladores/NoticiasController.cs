@@ -23,7 +23,7 @@ namespace CentroEducativoAPISQL.Controllers
 
         // Obtiene todas las noticias y devuelve rta en HTTP
         [HttpGet]
-        public async Task<ActionResult<List<Noticias>>> ObtenerTodasNoticiasAsync()
+        public async Task<ActionResult<List<Noticia>>> ObtenerTodasNoticiasAsync()
         {
             var noticias = await _noticiasService.ObtenerTodasNoticiasAsync();
             return Ok(noticias);
@@ -31,7 +31,7 @@ namespace CentroEducativoAPISQL.Controllers
 
         // Busca las noticias por id, parecido a la anterior
         [HttpGet("ObtenerNoticiasPorId/{id}")]
-        public async Task<ActionResult<Noticias>> ObtenerNoticiaPorIdAsync(int id)
+        public async Task<ActionResult<Noticia>> ObtenerNoticiaPorIdAsync(int id)
         {
             var noticia = await _noticiasService.ObtenerNoticiaPorIdAsync(id);
             if (noticia == null)
@@ -63,7 +63,7 @@ namespace CentroEducativoAPISQL.Controllers
 
 
         [HttpPost("CrearNoticia")]
-        public async Task<IActionResult> CrearNoticia(Noticias noticia)
+        public async Task<IActionResult> CrearNoticia(Noticia noticia)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace CentroEducativoAPISQL.Controllers
         }
 
         [HttpPut("EditarNoticia/{idNoticia}")]
-        public async Task<IActionResult> EditarNoticia(int id, Noticias noticia)
+        public async Task<IActionResult> EditarNoticia(int id, Noticia noticia)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace CentroEducativoAPISQL.Controllers
         }
 
         [HttpDelete("EliminarNoticia/{idNoticia}")]
-        public async Task<IActionResult> EliminarNoticia(int idNoticia, Noticias noticia)
+        public async Task<IActionResult> EliminarNoticia(int idNoticia, Noticia noticia)
         {
             try
             {

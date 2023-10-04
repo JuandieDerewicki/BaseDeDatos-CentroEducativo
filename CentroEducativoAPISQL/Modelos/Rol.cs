@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace CentroEducativoAPISQL.Modelos
 {
-    public class Roles
+    public class Rol
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,6 +16,6 @@ namespace CentroEducativoAPISQL.Modelos
 
 
         [JsonIgnore]
-        public ICollection<Usuarios>? Usuarios { get; set; } // Propiedad que representa coleccion de usuarios que indica que un rol puede estar relacionado con varios usuarios que tengan ese rol especifico
+        public ICollection<Usuario>? Usuarios { get; set; } // Propiedad que representa coleccion de usuarios que indica que un rol puede estar relacionado con varios usuarios que tengan ese rol especifico
     }
 }

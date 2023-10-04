@@ -22,7 +22,7 @@ namespace CentroEducativoAPISQL.Controladores
 
         // Obtiene todos los roles existentes
         [HttpGet]
-        public async Task<ActionResult<List<Roles>>> ObtenerTodosRolesAsync()
+        public async Task<ActionResult<List<Rol>>> ObtenerTodosRolesAsync()
         {
             var roles = await _rolesService.ObtenerTodosRolesAsync();
             return Ok(roles);
@@ -30,7 +30,7 @@ namespace CentroEducativoAPISQL.Controladores
 
         // Lo mismo pero los obtiene por id
         [HttpGet("ObtenerRolPorId/{id}")]
-        public async Task<ActionResult<Roles>> ObtenerRolPorIdAsync(int id)
+        public async Task<ActionResult<Rol>> ObtenerRolPorIdAsync(int id)
         {
             var rol = await _rolesService.ObtenerRolPorIdAsync(id);
 
@@ -43,7 +43,7 @@ namespace CentroEducativoAPISQL.Controladores
         }
 
         [HttpPost]
-        public async Task<ActionResult<Roles>> CrearRolAsync(Roles rol)
+        public async Task<ActionResult<Rol>> CrearRolAsync(Rol rol)
         {
             var rolCreado = await _rolesService.CrearRolAsync(rol);
 
@@ -56,7 +56,7 @@ namespace CentroEducativoAPISQL.Controladores
         }
 
         [HttpGet("ObtenerTipoDeRol/{tipoRol}")]
-        public async Task<ActionResult<Roles>> ObtenerRolPorTipoAsync(string tipoRol)
+        public async Task<ActionResult<Rol>> ObtenerRolPorTipoAsync(string tipoRol)
         {
             var rol = await _rolesService.ObtenerRolPorTipoAsync(tipoRol);
 
