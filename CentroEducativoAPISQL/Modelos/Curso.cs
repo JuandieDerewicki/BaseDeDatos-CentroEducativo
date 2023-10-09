@@ -21,7 +21,7 @@ namespace CentroEducativoAPISQL.Modelos
         public string? descripcion_curso { get; set; }
 
         //[ForeignKey("id_usuario")]
-        public ICollection<Usuario> Usuarios { get; set; }
-        public ICollection<Clase> Clases { get; set; }
+        public ICollection<Usuario>? Usuarios { get; set; }
+        public ICollection<Clase>? Clases { get; set; }
     }
 }

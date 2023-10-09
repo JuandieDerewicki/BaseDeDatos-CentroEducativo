@@ -60,7 +60,7 @@ public class MiDbContext : DbContext
             .HasOne(c => c.Noticia)
             .WithMany(n => n.Comentarios)
             .HasForeignKey(c => c.id_noticia)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Relación Usuario-Curso (N a 1)
         modelBuilder.Entity<Usuario>()

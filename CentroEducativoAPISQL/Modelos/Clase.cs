@@ -20,14 +20,14 @@ namespace CentroEducativoAPISQL.Modelos
         [StringLength(50)]
         public string materia { get; set; }
 
-        public string id_usuario { get; set; }
+        public string? id_usuario { get; set; }
 
         [ForeignKey("id_usuario")] // Clave Foranea que establece la relacion entre la clase y el docente a cargo
         public Usuario? Usuarios { get; set; }
 
-        public int id_curso { get; set; }
+        public int? id_curso { get; set; }
 
         [ForeignKey("id_curso")] // Clave Foranea que establece la relacion entre la clase y el curso en el que se dicta
-        public Curso Curso { get; set; }
+        public Curso? Curso { get; set; }
     }
 }

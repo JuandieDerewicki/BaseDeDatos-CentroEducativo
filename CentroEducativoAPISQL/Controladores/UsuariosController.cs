@@ -4,6 +4,8 @@ using CentroEducativoAPISQL.Modelos;
 using System.Linq;
 using System.Threading.Tasks;
 using CentroEducativoAPISQL.Servicios;
+using System.Text;
+using System.Security.Cryptography;
 
 // UsuariosController proporciona endpoints para realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en la entidad de usuarios utilizando los servicios proporcionados por UsuariosService. Cada acción del controlador corresponde a una operación específica en la entidad de usuarios.
 
@@ -67,6 +69,13 @@ namespace CentroEducativoAPISQL.Controllers
                     usuario.RolesUsuarios = rol;
                 }
 
+                // Realizar el hashing de la contraseña
+                using (var sha256 = SHA256.Create())
+                {
+                    var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(usuario.contraseña));
+                    usuario.hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                }
+
                 // Crear el usuario
                 var usuarioCreado = await _usuariosService.RegistrarUsuarioAsync(usuario, tipoUsuario);
 
@@ -107,6 +116,16 @@ namespace CentroEducativoAPISQL.Controllers
                     }
 
                     usuario.RolesUsuarios = rol;
+                }
+
+                // Verificar si se proporcionó una nueva contraseña y realizar el hashing si es necesario
+                if (!string.IsNullOrEmpty(usuario.contraseña))
+                {
+                    using (var sha256 = SHA256.Create())
+                    {
+                        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(usuario.contraseña));
+                        usuario.hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                    }
                 }
 
                 var usuarioEditado = await _usuariosService.EditarUsuarioAsync(dni, usuario);

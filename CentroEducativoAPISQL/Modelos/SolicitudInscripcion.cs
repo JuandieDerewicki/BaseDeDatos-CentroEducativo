@@ -25,7 +25,7 @@ namespace CentroEducativoAPISQL.Modelos
         [Required]
         public string fechaNacimientoSolicitante { get; set; }
 
-        public string id_usuario { get; set; }
+        public string? id_usuario { get; set; }
 
         [ForeignKey("id_usuario")]
 

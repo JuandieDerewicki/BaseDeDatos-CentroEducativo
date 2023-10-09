@@ -19,7 +19,7 @@ namespace CentroEducativoAPISQL.Modelos
 
         public string? id_usuario { get; set; }
 
-        public int id_noticia { get; set; }
+        public int? id_noticia { get; set; }
 
         [ForeignKey("id_usuario")] // Clave Foranea que estable relacion entre el comentario y el usuario que la hizo
        public Usuario? Usuario { get; set; } // Propiedad que te permite acceder al objeto Usuarios relacionado con este comentario. Esta propiedad ayuda a obtener más información sobre el autor del comentario

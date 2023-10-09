@@ -25,7 +25,7 @@ namespace CentroEducativoAPISQL.Modelos
         [Required]
         public string fecha { get; set; }
 
-        public string id_usuario { get; set; }
+        public string? id_usuario { get; set; } // Cambio de ? 
 
         [ForeignKey("id_usuario")] // Clave Foranea que establece la relacion entre la noticia y el usuario que la creo
 

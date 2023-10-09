@@ -29,6 +29,9 @@ namespace CentroEducativoAPISQL.Modelos
         [StringLength(50)]
         public string contraseña { get; set; }
 
+        // Propiedad para almacenar el hash de la contraseña
+        public string hash { get; set; }
+
         [Required]
         [StringLength(15)]
         public string telefono { get; set; }
@@ -38,13 +41,13 @@ namespace CentroEducativoAPISQL.Modelos
         [ForeignKey("id_rol")] // Clave Foranea para relacionar un Usuario con su rol en la tabla "Roles"
         public Rol RolesUsuarios { get; set; } // Representa la relación de navegación a Roles a través de la clave foránea id_rol. Esto permite acceder al rol asociado a un usuario directamente desde un objeto Usuarios.
 
-        public int id_curso { get; set; }   
+        public int? id_curso { get; set; }   
 
         [ForeignKey("id_curso")]
 
         public Curso? Cursos { get; set; }
 
-        public int id_clase {  get; set; }
+        public int? id_clase {  get; set; }
 
         [ForeignKey("id_clase")]
         public Clase? clase { get; set; }
