@@ -5,7 +5,7 @@
 namespace CentroEducativoAPISQL.Migrations
 {
     /// <inheritdoc />
-    public partial class AgregarCaracteresContraseña : Migration
+    public partial class AgregarMasCaracteresContraseña : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

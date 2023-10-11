@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CentroEducativoAPISQL.Migrations
 {
     [DbContext(typeof(MiDbContext))]
-    [Migration("20231011125528_AgregarCaracteresContraseña")]
-    partial class AgregarCaracteresContraseña
+    [Migration("20231011141050_EliminacionDeColumnaHash")]
+    partial class EliminacionDeColumnaHash
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -277,10 +277,6 @@ namespace CentroEducativoAPISQL.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("fechaNacimiento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("hash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

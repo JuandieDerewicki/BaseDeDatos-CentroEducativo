@@ -73,11 +73,8 @@ namespace CentroEducativoAPISQL.Controllers
                 using (var sha256 = SHA256.Create())
                 {
                     var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(usuario.contraseña));
-                    usuario.hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                    usuario.contraseña = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
                 }
-
-                // No incluyas la contraseña en el objeto usuario que se pasa al servicio
-                usuario.contraseña = null;
 
                 // Crear el usuario
                 var usuarioCreado = await _usuariosService.RegistrarUsuarioAsync(usuario, tipoUsuario);
@@ -89,6 +86,7 @@ namespace CentroEducativoAPISQL.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error al registrar el usuario: {ex.Message}");
             }
         }
+
 
 
         [HttpPut("{dni}")]
@@ -126,7 +124,7 @@ namespace CentroEducativoAPISQL.Controllers
                     using (var sha256 = SHA256.Create())
                     {
                         var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(usuario.contraseña));
-                        usuario.hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                        usuario.contraseña = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
                     }
                 }
 

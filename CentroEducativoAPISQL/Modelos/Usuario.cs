@@ -29,9 +29,6 @@ namespace CentroEducativoAPISQL.Modelos
         [StringLength(64)]
         public string contraseña { get; set; }
 
-        // Propiedad para almacenar el hash de la contraseña
-        public string hash { get; set; }
-
         [Required]
         [StringLength(15)]
         public string telefono { get; set; }
