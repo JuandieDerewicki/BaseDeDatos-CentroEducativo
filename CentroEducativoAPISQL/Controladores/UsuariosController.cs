@@ -76,6 +76,9 @@ namespace CentroEducativoAPISQL.Controllers
                     usuario.hash = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
                 }
 
+                // No incluyas la contraseña en el objeto usuario que se pasa al servicio
+                usuario.contraseña = null;
+
                 // Crear el usuario
                 var usuarioCreado = await _usuariosService.RegistrarUsuarioAsync(usuario, tipoUsuario);
 
@@ -84,7 +87,6 @@ namespace CentroEducativoAPISQL.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error al registrar el usuario: {ex.Message}");
-                //return BadRequest($"Error al registrar el usuario: {ex.Message}");
             }
         }
 
