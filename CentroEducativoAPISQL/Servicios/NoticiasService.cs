@@ -63,7 +63,7 @@ namespace CentroEducativoAPISQL.Servicios
                     .Include(u => u.RolesUsuarios)
                     .FirstOrDefaultAsync(u => u.dni == idUsuario);
 
-                if (usuario != null && (usuario.RolesUsuarios?.tipo_rol == "Autoridades" || usuario.RolesUsuarios?.tipo_rol == "Docentes"))
+                if (usuario != null && (usuario.RolesUsuarios?.tipo_rol == "Autoridad" || usuario.RolesUsuarios?.tipo_rol == "Docente"))
                 {
                     // Establece la fecha de publicación
                     //noticia.fechaPublicacion = DateTime.Now;
@@ -131,7 +131,7 @@ namespace CentroEducativoAPISQL.Servicios
             }
         }
 
-        public async Task<string> EliminarNoticia(int idNoticia, string idUsuario)
+        public async Task<string> EliminarNoticia(int idNoticia)
         {
             try
             {
@@ -143,30 +143,18 @@ namespace CentroEducativoAPISQL.Servicios
                     throw new KeyNotFoundException("La noticia no existe.");
                 }
 
-                // Verifica si el usuario tiene el rol de "Autoridades" o "Docentes"
-                var usuario = await _context.Usuarios
-                    .Include(u => u.RolesUsuarios)
-                    .FirstOrDefaultAsync(u => u.dni == idUsuario);
+                // Elimina los comentarios relacionados
+                var comentariosRelacionados = await _context.Comentarios
+                    .Where(c => c.id_noticia == idNoticia)
+                    .ToListAsync();
 
-                if (usuario != null && (usuario.RolesUsuarios?.tipo_rol == "Autoridades" || usuario.RolesUsuarios?.tipo_rol == "Docentes"))
-                {
-                    // Elimina los comentarios relacionados
-                    var comentariosRelacionados = await _context.Comentarios
-                        .Where(c => c.id_noticia == idNoticia)
-                        .ToListAsync();
+                _context.Comentarios.RemoveRange(comentariosRelacionados);
 
-                    _context.Comentarios.RemoveRange(comentariosRelacionados);
+                // Elimina la noticia
+                _context.Noticias.Remove(noticia);
+                await _context.SaveChangesAsync();
 
-                    // Elimina la noticia
-                    _context.Noticias.Remove(noticia);
-                    await _context.SaveChangesAsync();
-
-                    return "Noticia eliminada con éxito.";
-                }
-                else
-                {
-                    throw new UnauthorizedAccessException("No tienes permiso para eliminar noticias.");
-                }
+                return "Noticia eliminada con éxito.";
             }
             catch (Exception ex)
             {
@@ -174,7 +162,8 @@ namespace CentroEducativoAPISQL.Servicios
             }
         }
 
-        //        public async Task<string> EliminarNoticia(int idNoticia, string idUsuario)
+
+        //public async Task<string> EliminarNoticia(int idNoticia, string idUsuario)
         //{
         //    try
         //    {
@@ -191,7 +180,7 @@ namespace CentroEducativoAPISQL.Servicios
         //            .Include(u => u.RolesUsuarios)
         //            .FirstOrDefaultAsync(u => u.dni == idUsuario);
 
-        //        if (usuario != null && (usuario.RolesUsuarios?.tipo_rol == "Autoridades" || usuario.RolesUsuarios?.tipo_rol == "Docentes"))
+        //        if (usuario != null && (usuario.RolesUsuarios?.tipo_rol == "Autoridad" || usuario.RolesUsuarios?.tipo_rol == "Docente"))
         //        {
         //            // Elimina los comentarios relacionados
         //            var comentariosRelacionados = await _context.Comentarios
@@ -217,11 +206,6 @@ namespace CentroEducativoAPISQL.Servicios
         //    }
         //}
 
-
-
-
-
-
     }
 
     // La interfaz INoticiasService define los métodos que debe implementar NoticiasService y proporciona una abstracción para interactuar con los datos de las noticias.
@@ -232,6 +216,8 @@ namespace CentroEducativoAPISQL.Servicios
         Task<List<Noticia>> ObtenerNoticiasPorUsuarioAsync(string dni);
         Task<Noticia> CrearNoticia(Noticia noticia, string idUsuario);
         Task<Noticia> EditarNoticia(int id, Noticia noticia, string usuario);
-        Task<string> EliminarNoticia(int id,string usuario);
+        //Task<string> EliminarNoticia(int id,string usuario);
+
+        Task<string> EliminarNoticia(int id);
     }
 }

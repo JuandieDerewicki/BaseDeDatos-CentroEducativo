@@ -112,35 +112,8 @@ namespace CentroEducativoAPISQL.Controllers
             }
         }
 
-        [HttpDelete("EliminarNoticia/{idNoticia}")]
-        public async Task<IActionResult> EliminarNoticia(int idNoticia, Noticia noticia)
-        {
-            try
-            {
-                // Obtén el ID del usuario actual desde la solicitud (esto puede variar según tu implementación)
-                var idUsuarioActual = noticia.id_usuario;
-
-                // Usa el servicio para eliminar la noticia
-                var mensaje = await _noticiasService.EliminarNoticia(idNoticia, idUsuarioActual);
-
-                return Ok(mensaje);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Forbid("No tienes permiso para eliminar noticias.");
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("La noticia no existe.");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         //[HttpDelete("EliminarNoticia/{idNoticia}")]
-        //public async Task<IActionResult> EliminarNoticia(int idNoticia, Noticias noticia)
+        //public async Task<IActionResult> EliminarNoticia(int idNoticia, Noticia noticia)
         //{
         //    try
         //    {
@@ -166,33 +139,25 @@ namespace CentroEducativoAPISQL.Controllers
         //    }
         //}
 
+        [HttpDelete("EliminarNoticia/{idNoticia}")]
+        public async Task<IActionResult> EliminarNoticia(int idNoticia)
+        {
+            try
+            {
+                // Usa el servicio para eliminar la noticia
+                var mensaje = await _noticiasService.EliminarNoticia(idNoticia);
 
-        //[HttpDelete("EliminarNoticia/{id}")]
-        //public async Task<IActionResult> EliminarNoticia(int id, Noticias noticia)
-        //{
-        //    try
-        //    {
-        //        // Obtén el ID del usuario actual desde la solicitud (esto puede variar según tu implementación)
-        //        var idUsuarioActual = noticia.id_usuario;
-
-        //        // Usa el servicio para eliminar la noticia
-        //        var mensaje = await _noticiasService.EliminarNoticia(id, idUsuarioActual);
-
-        //        return Ok(mensaje);
-        //    }
-        //    catch (UnauthorizedAccessException)
-        //    {
-        //        return Forbid("No tienes permiso para eliminar noticias.");
-        //    }
-        //    catch (KeyNotFoundException)
-        //    {
-        //        return NotFound("La noticia no existe.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+                return Ok(mensaje);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("La noticia no existe.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

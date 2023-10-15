@@ -4,6 +4,7 @@ using CentroEducativoAPISQL.Controladores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using PdfSharp.Charting;
 
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -37,12 +38,13 @@ builder.Services.AddSwaggerGen();
 // Aqui se hace la configuracion de los servicios que realizan las tareas en la aplicacion, se registran los servicios que realizan operaciones relacionadas con la BD y la logica de la aplicacion
 
 builder.Services.AddScoped<IUsuariosService, UsuariosService>(); 
-//builder.Services.AddScoped<IAlumnoService, AlumnoService>();
 builder.Services.AddScoped<IRolesService, RolesService>(); 
 builder.Services.AddScoped<ISolicitudInscripcionService, SolicitudInscripcionService>();
-//builder.Services.AddScoped<INivelEducativoService, NivelEducativoService>();
 builder.Services.AddScoped<INoticiasService, NoticiasService>();
 builder.Services.AddScoped<IComentariosService, ComentariosService>();
+builder.Services.AddScoped<ICursoService, CursosService>();
+builder.Services.AddScoped<IClasesService, ClasesService>();
+
 
 // Cuando el proyecto empiece a crecer, se utiliza los servicios, separandolo de la logica para que los controladores solo llamen al servicio y devolver la logica que el servicio ejecuta   
 
