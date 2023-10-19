@@ -79,159 +79,11 @@ namespace CentroEducativoAPISQL.Servicios
                 .Where(cc => cc.Clase.Profesor.dni == dniDocente)
                 .SelectMany(cc => cc.Curso.UsuariosCursos)
                 .Select(uc => uc.Usuario)
-                .Distinct()
+                .OrderBy(uc => uc.nombreCompleto)
                 .ToListAsync();
 
             return alumnos;
         }
-
-
-        //public async Task<byte[]> GenerarListaAlumnosPorDocentePDF(string dniDocente)
-        //{
-        //    try
-        //    {
-        //        var alumnos = await ListarAlumnosPorDocenteAsync(dniDocente);
-
-        //        using (MemoryStream ms = new MemoryStream())
-        //        {
-        //            Document doc = new Document();
-        //            PdfWriter writer = PdfWriter.GetInstance(doc, ms);
-        //            doc.Open();
-
-        //            // Agregar el logotipo (ajusta la ruta de la imagen)
-        //            string imagePath = @"https://i.imgur.com/RyVmq11.jpg";
-        //            iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(imagePath);
-        //            image.ScaleToFit(100, 100);
-        //            image.SetAbsolutePosition(50, 750); // Ajusta la posición vertical
-        //            doc.Add(image);
-
-        //            // Título
-        //            doc.Add(new Paragraph("\n"));
-        //            doc.Add(new Paragraph("\n"));
-        //            Paragraph title = new Paragraph("Lista de Alumnos por Docente");
-        //            title.Alignment = Element.ALIGN_CENTER;
-        //            doc.Add(title);
-
-        //            // Lista de alumnos
-        //            var contador = 0;
-        //            foreach (var alumno in alumnos)
-        //            {
-        //                contador++;
-        //                doc.Add(new Paragraph("\n"));
-        //                doc.Add(new Paragraph("Nro. de Legajo: " + alumno.dni));
-        //                doc.Add(new Paragraph("Nombre Completo: " + alumno.nombreCompleto));
-        //            }
-
-        //            // División
-        //            doc.Add(new Paragraph("--------------------------------------------------"));
-
-        //            // Fecha
-        //            doc.Add(new Paragraph("Fecha: " + DateTime.Now.ToString("dd/MM/yyyy")));
-
-        //            // Total de alumnos
-        //            doc.Add(new Paragraph("Total de Alumnos: " + contador));
-
-        //            doc.Close();
-        //            writer.Close();
-
-        //            return ms.ToArray();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error al generar el PDF.", ex);
-        //    }
-        //}
-
-        //public async Task<byte[]> GenerarListaAlumnosPorDocentePDF(string dniDocente)
-        //{
-        //    try
-        //    {
-
-        //        var alumnos = await ListarAlumnosPorDocenteAsync(dniDocente);
-
-        //        var docente = await _context.Usuarios
-        //            .FirstOrDefaultAsync(u => u.dni == dniDocente);
-
-        //        if (docente == null)
-        //        {
-        //            throw new KeyNotFoundException("Docente no encontrado");
-        //        }
-
-
-        //        using (MemoryStream ms = new MemoryStream())
-        //        {
-        //            Document doc = new Document();
-        //            PdfWriter writer = PdfWriter.GetInstance(doc, ms);
-        //            doc.Open();
-
-        //            // Agregar el logotipo (ajusta la ruta de la imagen)
-        //            string imagePath = @"https://i.imgur.com/RyVmq11.jpg";
-        //            iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(imagePath);
-        //            image.ScaleToFit(100, 100);
-        //            image.SetAbsolutePosition(50, 750); // Ajusta la posición vertical
-        //            doc.Add(image);
-
-        //            // Título
-        //            doc.Add(new Paragraph("\n"));
-        //            doc.Add(new Paragraph("\n"));
-        //            Paragraph title = new Paragraph("Lista de Alumnos por Docente");
-        //            title.Alignment = Element.ALIGN_CENTER;
-        //            doc.Add(title);
-
-        //            var contador = 0;
-
-        //            // Obtener detalles de las clases del profesor
-        //            //var clasesDelProfesor = await _context.Clases
-        //            //    .Where(clase => clase.Profesor.dni == dniDocente)
-        //            //    .ToListAsync();
-
-
-        //            var clasesDelDocente = await _context.Clases
-        //                .Where(c => c.id_profesor == dniDocente)
-        //                .ToListAsync();
-
-        //            doc.Add(new Paragraph("Profesor: " + docente.nombreCompleto));
-
-        //            foreach (var clase in clasesDelDocente)
-        //            {
-        //                //Curso curso = new Curso();
-        //                // Detalles de la clase
-        //                doc.Add(new Paragraph("Materia: " + clase.materia));
-        //                doc.Add(new Paragraph("Horario: " + clase.hora_inicio + " - " + clase.hora_fin));
-        //                // doc.Add(new Paragraph("Curso: " + curso.nombre_curso));
-
-        //                // Lista de alumnos
-        //                var alumnosDeClase = alumnos.Where(alumno => alumno.UsuariosClases.Any(uc => uc.IdClase == clase.id_clase)).ToList();
-        //                foreach (var alumno in alumnosDeClase)
-        //                {
-        //                    contador++;
-        //                    doc.Add(new Paragraph("\n"));
-        //                    doc.Add(new Paragraph("Nro. de Legajo: " + alumno.dni));
-        //                    doc.Add(new Paragraph("Nombre Completo: " + alumno.nombreCompleto));
-        //                }
-
-        //                // División
-        //                doc.Add(new Paragraph("--------------------------------------------------"));
-        //            }
-
-        //            // Fecha
-        //            doc.Add(new Paragraph("Fecha: " + DateTime.Now.ToString("dd/MM/yyyy")));
-
-        //            // Total de alumnos
-        //            doc.Add(new Paragraph("Total de Alumnos: " + contador));
-
-        //            doc.Close();
-        //            writer.Close();
-
-        //            return ms.ToArray();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error al generar el PDF.", ex);
-        //    }
-        //}
 
         public async Task<byte[]> GenerarListaAlumnosPorDocentePDF(string dniDocente)
         {
@@ -261,6 +113,8 @@ namespace CentroEducativoAPISQL.Servicios
                     // Título
                     doc.Add(new Paragraph("\n"));
                     doc.Add(new Paragraph("\n"));
+                    doc.Add(new Paragraph("\n"));
+                    doc.Add(new Paragraph("\n"));
                     Paragraph title = new Paragraph("Lista de Alumnos por Docente");
                     title.Alignment = Element.ALIGN_CENTER;
                     doc.Add(title);
@@ -278,11 +132,15 @@ namespace CentroEducativoAPISQL.Servicios
                     {
                         doc.Add(new Paragraph("Materia: " + clase.materia));
                         doc.Add(new Paragraph("Horario: " + clase.hora_inicio + " - " + clase.hora_fin));
-                        var alumnos = await _context.UsuariosClases
-                            .Where(uc => uc.IdClase == clase.id_clase)
-                            .Select(uc => uc.Usuario)
-                            .OrderBy(uc => uc.nombreCompleto)
-                            .ToListAsync();
+
+                        // Obtener la lista de alumnos para esta clase (dentro del bucle)
+
+                        var alumnos = await _context.CursoClases
+                                .Where(cc => cc.Clase.Profesor.dni == dniDocente)
+                                .SelectMany(cc => cc.Curso.UsuariosCursos)
+                                .Select(uc => uc.Usuario)
+                                .OrderBy(uc => uc.nombreCompleto)
+                                .ToListAsync();
 
                         foreach (var alumno in alumnos)
                         {
@@ -312,7 +170,6 @@ namespace CentroEducativoAPISQL.Servicios
                 throw new Exception("Error al generar el PDF.", ex);
             }
         }
-
 
 
     }

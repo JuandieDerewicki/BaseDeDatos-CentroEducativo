@@ -76,7 +76,7 @@ namespace CentroEducativoAPISQL.Controladores
         }
 
         [HttpGet("alumnosPorDocente/{dniDocente}")]
-        public async Task<ActionResult<IEnumerable<Usuario>>> ListarAlumnosPorDocente(string dniDocente)
+        public async Task<ActionResult<List<Usuario>>> ListarAlumnosPorDocente(string dniDocente)
         {
             try
             {
