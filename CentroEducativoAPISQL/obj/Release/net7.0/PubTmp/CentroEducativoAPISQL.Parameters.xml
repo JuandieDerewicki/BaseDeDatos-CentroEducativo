@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter name="IIS Web Application Name" description="" value="CentroEducativo" tags="IisApp">
+  <parameter name="IIS Web Application Name" description="" value="centroeducativoapi" tags="IisApp">
     <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\bocaj\\OneDrive\\Documentos\\Facultad\\ProyectoCentroEducativo\\CentroEducativoPruebas\\CentroEducativoAPISQL\\obj\\Release\\net7\.0\\PubTmp\\Out\\$" />
   </parameter>
 </parameters>

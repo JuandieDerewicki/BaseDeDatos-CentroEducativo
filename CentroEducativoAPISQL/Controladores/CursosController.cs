@@ -1,254 +1,148 @@
-﻿using CentroEducativoAPISQL.Modelos;
+﻿using Microsoft.AspNetCore.Mvc;
 using CentroEducativoAPISQL.Servicios;
-using Microsoft.AspNetCore.Mvc;
+using CentroEducativoAPISQL.Modelos;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 
-namespace CentroEducativoAPISQL.Controladores
+namespace CentroEducativoAPISQL.Controllers
 {
+    [EnableCors("ReglasCors")]
     [Route("api/cursos")]
     [ApiController]
     public class CursosController : ControllerBase
     {
-        private readonly CursosService _cursosService;
+        private readonly ICursoService _cursoService;
 
-        public CursosController(CursosService cursosService)
+        public CursosController(ICursoService cursoService)
         {
-            _cursosService = cursosService;
+            _cursoService = cursoService;
         }
 
-        // Endpoint para obtener todos los cursos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Curso>>> ObtenerCursos()
         {
-            try
-            {
-                var cursos = await _cursosService.ObtenerCursosAsync();
-                return Ok(cursos);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener cursos: " + ex.Message);
-            }
+            var cursos = await _cursoService.ObtenerCursosAsync();
+            return Ok(cursos);
         }
 
-        // Endpoint para obtener un curso por su ID
         [HttpGet("{idCurso}")]
         public async Task<ActionResult<Curso>> ObtenerCursoPorId(int idCurso)
         {
-            try
+            var curso = await _cursoService.ObtenerCursoPorIdAsync(idCurso);
+            if (curso == null)
             {
-                var curso = await _cursosService.ObtenerCursoPorIdAsync(idCurso);
-
-                if (curso == null)
-                {
-                    return NotFound("Curso no encontrado");
-                }
-
-                return Ok(curso);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener el curso: " + ex.Message);
-            }
+            return Ok(curso);
         }
 
-        //[HttpGet("alumnosPorDocente/{docenteId}")]
-        //public IActionResult ListarAlumnosPorDocente(string docenteId)
+        //[HttpGet("{idCurso}/alumnos")]
+        //public async Task<ActionResult<IEnumerable<Usuario>>> ObtenerAlumnosDelCurso(int idCurso)
         //{
-        //    try
-        //    {
-        //        var alumnos = _cursosService.ObtenerAlumnosPorDocente(docenteId);
-        //        return Ok(alumnos);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
+        //    var alumnos = await _cursoService.ObtenerAlumnosDelCursoAsync(idCurso);
+        //    return Ok(alumnos);
         //}
 
-        [HttpGet("{docenteId}")]
-        public ActionResult<List<Usuario>> ObtenerAlumnosPorDocente(string docenteId)
-        {
-            try
-            {
-                var alumnos = _cursosService.ObtenerAlumnosPorDocente(docenteId);
-                return Ok(alumnos);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener los alumnos por docente: " + ex.Message);
-            }
-        }
 
-        [HttpGet("alumnos")]
-        public ActionResult<List<Usuario>> ObtenerAlumnosDeTodosLosCursos()
-        {
-            try
-            {
-                var alumnos = _cursosService.ObtenerAlumnosDeTodosLosCursos();
-                return Ok(alumnos);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener los alumnos de todos los cursos: " + ex.Message);
-            }
-        }
+        //[HttpGet("alumnos/docente/{docenteId}")]
+        //public ActionResult<List<Usuario>> ObtenerAlumnosPorDocente(string docenteId)
+        //{
+        //    var alumnos = _cursoService.ObtenerAlumnosPorDocente(docenteId);
+        //    return Ok(alumnos);
+        //}
+
+        //[HttpGet("alumnos/todos")]
+        //public ActionResult<List<Usuario>> ObtenerAlumnosDeTodosLosCursos()
+        //{
+        //    var alumnos = _cursoService.ObtenerAlumnosDeTodosLosCursos();
+        //    return Ok(alumnos);
+        //}
 
         [HttpGet("nombre/{nombreCurso}")]
         public ActionResult<Curso> ObtenerCursoPorNombre(string nombreCurso)
         {
-            try
+            var curso = _cursoService.ObtenerCursoPorNombre(nombreCurso);
+            if (curso == null)
             {
-                var curso = _cursosService.ObtenerCursoPorNombre(nombreCurso);
-                return Ok(curso);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener el curso por nombre: " + ex.Message);
-            }
+            return Ok(curso);
         }
 
-        [HttpGet("alumnos/{nombreCurso}")]
-        public ActionResult<List<Usuario>> ObtenerAlumnosPorNombreDeCurso(string nombreCurso)
-        {
-            try
-            {
-                var alumnos = _cursosService.ObtenerAlumnosPorNombreDeCurso(nombreCurso);
-                return Ok(alumnos);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Curso no encontrado");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener los alumnos por nombre de curso: " + ex.Message);
-            }
-        }
+        //[HttpGet("alumnos/nombre/{nombreCurso}")]
+        //public ActionResult<List<Usuario>> ObtenerAlumnosPorNombreDeCurso(string nombreCurso)
+        //{
+        //    var alumnos = _cursoService.ObtenerAlumnosPorNombreDeCurso(nombreCurso);
+        //    return Ok(alumnos);
+        //}
 
-        [HttpGet("alumnos/id/{idCurso}")]
-        public ActionResult<List<Usuario>> ObtenerAlumnosPorIdDeCurso(int idCurso)
-        {
-            try
-            {
-                var alumnos = _cursosService.ObtenerAlumnosPorIdDeCurso(idCurso);
-                return Ok(alumnos);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Curso no encontrado");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener los alumnos por ID de curso: " + ex.Message);
-            }
-        }
+        //[HttpGet("alumnos/curso/{idCurso}")]
+        //public ActionResult<List<Usuario>> ObtenerAlumnosPorIdDeCurso(int idCurso)
+        //{
+        //    var alumnos = _cursoService.ObtenerAlumnosPorIdDeCurso(idCurso);
+        //    return Ok(alumnos);
+        //}
 
-        [HttpGet("alumno/{dni}/{idCurso}")]
-        public ActionResult<Usuario> BuscarAlumnoPorDNIEnCurso(string dni, int idCurso)
-        {
-            try
-            {
-                var alumno = _cursosService.BuscarAlumnoPorDNIEnCurso(dni, idCurso);
-                if (alumno == null)
-                {
-                    return NotFound("Alumno no encontrado en el curso.");
-                }
-                return Ok(alumno);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Curso no encontrado");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al buscar al alumno por DNI en el curso: " + ex.Message);
-            }
-        }
+        //[HttpGet("alumnos/dni/{dni}/curso/{idCurso}")]
+        //public ActionResult<Usuario> BuscarAlumnoPorDNIEnCurso(string dni, int idCurso)
+        //{
+        //    var alumno = _cursoService.BuscarAlumnoPorDNIEnCurso(dni, idCurso);
+        //    if (alumno == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(alumno);
+        //}
 
-        [HttpGet("alumno/{dni}")]
-        public ActionResult<Usuario> BuscarAlumnoEnCualquierCurso(string dni)
-        {
-            try
-            {
-                var alumno = _cursosService.BuscarAlumnoEnCualquierCurso(dni);
-                if (alumno == null)
-                {
-                    return NotFound("Alumno no encontrado en ningún curso.");
-                }
-                return Ok(alumno);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al buscar al alumno en cualquier curso: " + ex.Message);
-            }
-        }
+        //[HttpGet("alumnos/dni/{dni}")]
+        //public ActionResult<Usuario> BuscarAlumnoEnCualquierCurso(string dni)
+        //{
+        //    var alumno = _cursoService.BuscarAlumnoEnCualquierCurso(dni);
+        //    if (alumno == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(alumno);
+        //}
 
-        [HttpGet("profesores/{idCurso}")]
-        public ActionResult<List<Usuario>> ObtenerProfesoresPorCurso(int idCurso)
-        {
-            try
-            {
-                var profesores = _cursosService.ObtenerProfesoresPorCurso(idCurso);
-                return Ok(profesores);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Curso no encontrado");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener profesores por curso: " + ex.Message);
-            }
-        }
+        //[HttpGet("profesores/curso/{idCurso}")]
+        //public ActionResult<List<Usuario>> ObtenerProfesoresPorCurso(int idCurso)
+        //{
+        //    var profesores = _cursoService.ObtenerProfesoresPorCurso(idCurso);
+        //    return Ok(profesores);
+        //}
 
         [HttpPost]
-        public async Task<ActionResult<Curso>> AgregarCurso([FromBody] Curso nuevoCurso)
+        public async Task<ActionResult<Curso>> AgregarCurso(Curso curso)
         {
-            try
-            {
-                var cursoCreado = await _cursosService.AgregarCursoAsync(nuevoCurso);
-                return Ok(cursoCreado);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al agregar el curso: " + ex.Message);
-            }
+            var nuevoCurso = await _cursoService.AgregarCursoAsync(curso);
+            return CreatedAtAction("ObtenerCursoPorId", new { idCurso = nuevoCurso.id_curso }, nuevoCurso);
         }
 
         [HttpPut("{idCurso}")]
-        public async Task<ActionResult<Curso>> EditarCurso(int idCurso, [FromBody] Curso cursoActualizado)
+        public async Task<ActionResult<string>> EditarCurso(int idCurso, Curso curso)
         {
-            try
+            var mensaje = await _cursoService.EditarCursoAsync(idCurso, curso);
+            if (mensaje == "Curso no encontrado.")
             {
-                var curso = await _cursosService.EditarCursoAsync(idCurso, cursoActualizado);
-                return Ok(curso);
+                return NotFound(mensaje);
             }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Curso no encontrado");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al editar el curso: " + ex.Message);
-            }
+            return Ok(mensaje);
         }
 
         [HttpDelete("{idCurso}")]
         public async Task<ActionResult<string>> EliminarCurso(int idCurso)
         {
-            try
+            var mensaje = await _cursoService.EliminarCursoAsync(idCurso);
+            if (mensaje == "Curso no encontrado.")
             {
-                var mensaje = await _cursosService.EliminarCursoAsync(idCurso);
-                return Ok(mensaje);
+                return NotFound(mensaje);
             }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Curso no encontrado");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al eliminar el curso: " + ex.Message);
-            }
+            return Ok(mensaje);
         }
     }
 }
+
+

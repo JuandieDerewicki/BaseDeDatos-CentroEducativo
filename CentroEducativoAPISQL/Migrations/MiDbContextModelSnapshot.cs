@@ -16,7 +16,7 @@ namespace CentroEducativoAPISQL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -39,10 +39,7 @@ namespace CentroEducativoAPISQL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("id_curso")
-                        .HasColumnType("int");
-
-                    b.Property<string>("id_usuario")
+                    b.Property<string>("id_profesor")
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("materia")
@@ -52,9 +49,7 @@ namespace CentroEducativoAPISQL.Migrations
 
                     b.HasKey("id_clase");
 
-                    b.HasIndex("id_curso");
-
-                    b.HasIndex("id_usuario");
+                    b.HasIndex("id_profesor");
 
                     b.ToTable("Clases");
                 });
@@ -121,6 +116,60 @@ namespace CentroEducativoAPISQL.Migrations
                     b.ToTable("Curso");
                 });
 
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.CursoClase", b =>
+                {
+                    b.Property<int>("IdCurso")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdClase")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_curso_clase")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdCurso", "IdClase");
+
+                    b.HasIndex("IdClase");
+
+                    b.ToTable("CursoClases");
+                });
+
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Nota", b =>
+                {
+                    b.Property<int>("id_nota")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_nota"));
+
+                    b.Property<string>("fecha")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("id_alumno")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("id_clase")
+                        .HasColumnType("int");
+
+                    b.Property<string>("id_docente")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("nota")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id_nota");
+
+                    b.HasIndex("id_alumno");
+
+                    b.HasIndex("id_clase");
+
+                    b.HasIndex("id_docente");
+
+                    b.ToTable("Notas");
+                });
+
             modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Noticia", b =>
                 {
                     b.Property<int>("id_noticia")
@@ -184,12 +233,17 @@ namespace CentroEducativoAPISQL.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("id_usuario")
-                        .IsRequired()
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("monto")
+                    b.Property<string>("monto")
+                        .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("nro_factura")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("tipo_pago")
                         .IsRequired()
@@ -277,12 +331,6 @@ namespace CentroEducativoAPISQL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("id_clase")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("id_curso")
-                        .HasColumnType("int");
-
                     b.Property<int>("id_rol")
                         .HasColumnType("int");
 
@@ -304,29 +352,54 @@ namespace CentroEducativoAPISQL.Migrations
                     b.HasIndex("dni")
                         .IsUnique();
 
-                    b.HasIndex("id_clase");
-
-                    b.HasIndex("id_curso");
-
                     b.HasIndex("id_rol");
 
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.UsuarioClase", b =>
+                {
+                    b.Property<string>("Dni")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("IdClase")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_usuario_clase")
+                        .HasColumnType("int");
+
+                    b.HasKey("Dni", "IdClase");
+
+                    b.HasIndex("IdClase");
+
+                    b.ToTable("UsuariosClases");
+                });
+
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.UsuarioCurso", b =>
+                {
+                    b.Property<string>("Dni")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("IdCurso")
+                        .HasColumnType("int");
+
+                    b.Property<int>("id_usuario_curso")
+                        .HasColumnType("int");
+
+                    b.HasKey("Dni", "IdCurso");
+
+                    b.HasIndex("IdCurso");
+
+                    b.ToTable("UsuariosCursos");
+                });
+
             modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Clase", b =>
                 {
-                    b.HasOne("CentroEducativoAPISQL.Modelos.Curso", "Curso")
-                        .WithMany("Clases")
-                        .HasForeignKey("id_curso")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Usuarios")
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Profesor")
                         .WithMany()
-                        .HasForeignKey("id_usuario");
+                        .HasForeignKey("id_profesor");
 
-                    b.Navigation("Curso");
-
-                    b.Navigation("Usuarios");
+                    b.Navigation("Profesor");
                 });
 
             modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Comentario", b =>
@@ -346,6 +419,49 @@ namespace CentroEducativoAPISQL.Migrations
                     b.Navigation("Usuario");
                 });
 
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.CursoClase", b =>
+                {
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Clase", "Clase")
+                        .WithMany("CursoClases")
+                        .HasForeignKey("IdClase")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Curso", "Curso")
+                        .WithMany("CursoClases")
+                        .HasForeignKey("IdCurso")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clase");
+
+                    b.Navigation("Curso");
+                });
+
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Nota", b =>
+                {
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Alumno")
+                        .WithMany("NotasComoAlumno")
+                        .HasForeignKey("id_alumno")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Clase", "Clase")
+                        .WithMany("Notas")
+                        .HasForeignKey("id_clase")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Docente")
+                        .WithMany("NotasComoDocente")
+                        .HasForeignKey("id_docente")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Alumno");
+
+                    b.Navigation("Clase");
+
+                    b.Navigation("Docente");
+                });
+
             modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Noticia", b =>
                 {
                     b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Usuario")
@@ -360,8 +476,7 @@ namespace CentroEducativoAPISQL.Migrations
                     b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Usuario")
                         .WithMany("Pagos")
                         .HasForeignKey("id_usuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Usuario");
                 });
@@ -378,34 +493,67 @@ namespace CentroEducativoAPISQL.Migrations
 
             modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Usuario", b =>
                 {
-                    b.HasOne("CentroEducativoAPISQL.Modelos.Clase", "clase")
-                        .WithMany()
-                        .HasForeignKey("id_clase")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CentroEducativoAPISQL.Modelos.Curso", "Cursos")
-                        .WithMany("Usuarios")
-                        .HasForeignKey("id_curso")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("CentroEducativoAPISQL.Modelos.Rol", "RolesUsuarios")
                         .WithMany("Usuarios")
                         .HasForeignKey("id_rol")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Cursos");
-
                     b.Navigation("RolesUsuarios");
+                });
 
-                    b.Navigation("clase");
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.UsuarioClase", b =>
+                {
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Usuario")
+                        .WithMany("UsuariosClases")
+                        .HasForeignKey("Dni")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Clase", "Clase")
+                        .WithMany("UsuariosClases")
+                        .HasForeignKey("IdClase")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clase");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.UsuarioCurso", b =>
+                {
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Usuario", "Usuario")
+                        .WithMany("UsuariosCursos")
+                        .HasForeignKey("Dni")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CentroEducativoAPISQL.Modelos.Curso", "Curso")
+                        .WithMany("UsuariosCursos")
+                        .HasForeignKey("IdCurso")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Curso");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Clase", b =>
+                {
+                    b.Navigation("CursoClases");
+
+                    b.Navigation("Notas");
+
+                    b.Navigation("UsuariosClases");
                 });
 
             modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Curso", b =>
                 {
-                    b.Navigation("Clases");
+                    b.Navigation("CursoClases");
 
-                    b.Navigation("Usuarios");
+                    b.Navigation("UsuariosCursos");
                 });
 
             modelBuilder.Entity("CentroEducativoAPISQL.Modelos.Noticia", b =>
@@ -422,11 +570,19 @@ namespace CentroEducativoAPISQL.Migrations
                 {
                     b.Navigation("Comentarios");
 
+                    b.Navigation("NotasComoAlumno");
+
+                    b.Navigation("NotasComoDocente");
+
                     b.Navigation("Noticias");
 
                     b.Navigation("Pagos");
 
                     b.Navigation("SolicitudesInscripcion");
+
+                    b.Navigation("UsuariosClases");
+
+                    b.Navigation("UsuariosCursos");
                 });
 #pragma warning restore 612, 618
         }

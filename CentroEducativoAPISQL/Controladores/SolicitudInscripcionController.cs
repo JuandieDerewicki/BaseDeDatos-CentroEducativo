@@ -1,5 +1,6 @@
 ﻿using CentroEducativoAPISQL.Modelos;
 using CentroEducativoAPISQL.Servicios;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CentroEducativoAPISQL.Controllers
 {
+    [EnableCors("ReglasCors")]
     // El controlador SolicitudInscripcionController es responsable de gestionar las solicitudes de inscripción
     [Route("api/[controller]")]
     [ApiController]

@@ -1,6 +1,7 @@
 ﻿using CentroEducativoAPISQL.Modelos;
 using CentroEducativoAPISQL.Servicios;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -9,6 +10,7 @@ using System.Security.Claims;
 
 namespace CentroEducativoAPISQL.Controllers
 {
+    [EnableCors("ReglasCors")]
     // El controlador NoticiasController es responsable de gestionar los datos de las noticias 
     [Route("api/[controller]")]
     [ApiController]

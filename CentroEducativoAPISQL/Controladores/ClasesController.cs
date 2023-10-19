@@ -1,75 +1,69 @@
 ﻿using CentroEducativoAPISQL.Modelos;
 using CentroEducativoAPISQL.Servicios;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CentroEducativoAPISQL.Controladores
 {
+    [EnableCors("ReglasCors")]
     // El controlador ComentariosController se encarga de gestionar las operaciones relacionadas con los comentarios
     [Route("api/[controller]")]
     [ApiController]
     public class ClasesController : ControllerBase
     {
-        private readonly ClasesService _clasesService;
+        private readonly IClasesService _clasesService;
 
-        public ClasesController(ClasesService clasesService)
+        public ClasesController(IClasesService clasesService)
         {
             _clasesService = clasesService;
         }
 
-        // Endpoint para obtener todas las clases
         [HttpGet]
         public async Task<ActionResult<List<Clase>>> ObtenerTodasLasClases()
         {
-            try
-            {
-                var clases = await _clasesService.ObtenerTodasLasClasesAsync();
-                return Ok(clases);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener las clases: " + ex.Message);
-            }
+            var clases = await _clasesService.ObtenerTodasLasClasesAsync();
+            return Ok(clases);
         }
 
-        // Endpoint para obtener una clase por su ID
         [HttpGet("{idClase}")]
         public async Task<ActionResult<Clase>> ObtenerClasePorId(int idClase)
         {
-            try
+            var clase = await _clasesService.ObtenerClasePorIdAsync(idClase);
+            if (clase == null)
             {
-                var clase = await _clasesService.ObtenerClasePorIdAsync(idClase);
-
-                if (clase == null)
-                {
-                    return NotFound("Clase no encontrada");
-                }
-
-                return Ok(clase);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return BadRequest("Error al obtener la clase: " + ex.Message);
-            }
+            return Ok(clase);
         }
 
+        [HttpGet("buscarPorNombre")]
+        public async Task<ActionResult<List<Clase>>> BuscarClasesPorNombre([FromQuery] string nombreClase)
+        {
+            var clases = await _clasesService.BuscarClasesPorNombreAsync(nombreClase);
+            return Ok(clases);
+        }
 
+        //[HttpGet("buscarPorProfesor")]
+        //public async Task<ActionResult<List<Clase>>> BuscarClasesPorProfesor([FromQuery] string nombreProfesor)
+        //{
+        //    var clases = await _clasesService.BuscarClasesPorProfesorAsync(nombreProfesor);
+        //    return Ok(clases);
+        //}
 
-        // Endpoint para crear una nueva clase
         [HttpPost]
         public async Task<ActionResult<Clase>> CrearClase([FromBody] Clase nuevaClase)
         {
             try
             {
-                var claseCreada = await _clasesService.CrearClaseAsync(nuevaClase);
-                return Ok(claseCreada);
+                var clase = await _clasesService.CrearClaseAsync(nuevaClase);
+                return CreatedAtAction(nameof(ObtenerClasePorId), new { idClase = clase.id_clase }, clase);
             }
             catch (Exception ex)
             {
-                return BadRequest("Error al crear la clase: " + ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
-        // Endpoint para actualizar una clase existente
         [HttpPut("{idClase}")]
         public async Task<ActionResult<Clase>> ActualizarClase(int idClase, [FromBody] Clase claseActualizada)
         {
@@ -78,17 +72,16 @@ namespace CentroEducativoAPISQL.Controladores
                 var clase = await _clasesService.ActualizarClaseAsync(idClase, claseActualizada);
                 return Ok(clase);
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("Clase no encontrada");
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest("Error al actualizar la clase: " + ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
-        // Endpoint para eliminar una clase por su ID
         [HttpDelete("{idClase}")]
         public async Task<ActionResult<string>> EliminarClase(int idClase)
         {
@@ -97,13 +90,13 @@ namespace CentroEducativoAPISQL.Controladores
                 var mensaje = await _clasesService.EliminarClaseAsync(idClase);
                 return Ok(mensaje);
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound("Clase no encontrada");
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest("Error al eliminar la clase: " + ex.Message);
+                return BadRequest(ex.Message);
             }
         }
     }

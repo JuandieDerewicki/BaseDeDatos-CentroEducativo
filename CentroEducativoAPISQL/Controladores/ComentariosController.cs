@@ -1,11 +1,13 @@
 ﻿using CentroEducativoAPISQL.Modelos;
 using CentroEducativoAPISQL.Servicios;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 // ComentariosController proporciona endpoints para consultar los datos de los comentarios utilizando los servicios proporcionados por ComentariosService. Cada acción del controlador corresponde a una operación específica relacionada con los comentarios.
 
 namespace CentroEducativoAPISQL.Controllers
 {
+    [EnableCors("ReglasCors")]
     // El controlador ComentariosController se encarga de gestionar las operaciones relacionadas con los comentarios
     [Route("api/[controller]")]
     [ApiController]

@@ -38,16 +38,16 @@ namespace CentroEducativoAPISQL.Modelos
         [ForeignKey("id_rol")] // Clave Foranea para relacionar un Usuario con su rol en la tabla "Roles"
         public Rol RolesUsuarios { get; set; } // Representa la relación de navegación a Roles a través de la clave foránea id_rol. Esto permite acceder al rol asociado a un usuario directamente desde un objeto Usuarios.
 
-        public int? id_curso { get; set; }   
+        [JsonIgnore]
+        public ICollection<Nota>? NotasComoDocente { get; set; }
 
-        [ForeignKey("id_curso")]
+        [JsonIgnore]
+        public ICollection<Nota>? NotasComoAlumno { get; set; }
 
-        public Curso? Cursos { get; set; }
-
-        public int? id_clase {  get; set; }
-
-        [ForeignKey("id_clase")]
-        public Clase? clase { get; set; }
+        [JsonIgnore]
+        public ICollection<UsuarioCurso>? UsuariosCursos { get; set; }
+        [JsonIgnore]
+        public ICollection<UsuarioClase>? UsuariosClases { get; set; }
 
         [JsonIgnore]
         public ICollection<Pago>? Pagos { get; set; }

@@ -7,21 +7,21 @@ using Microsoft.Extensions.Options;
 using PdfSharp.Charting;
 
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+//var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // En services que son todas las clases que estan por venir y los controladores que estamos por usar, le vamos a añadir el contexto que estamos creando
 
 // Esta clase es el punto de entrada de la aplicacion que utiliza ASP.NET Core para construir una API.
 var builder = WebApplication.CreateBuilder(args); // Se inicia la construccion de la aplicacion mediante la creacion de este objeto a partir de builder, se utiliza la instancia para configurar y construir la aplicacion 
 
-builder.Services.AddCors(option =>
-{
-    option.AddPolicy(name: MyAllowSpecificOrigins, policy =>
-    {
-        policy.SetIsOriginAllowed
-        (origin => true).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    });
-});
+//builder.Services.AddCors(option =>
+//{
+//    option.AddPolicy(name: MyAllowSpecificOrigins, policy =>
+//    {
+//        policy.SetIsOriginAllowed
+//        (origin => true).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+//    });
+//});
 
 // Se obtiene la cadena de conexion a la BD desde la config de la aplicacion, mientras la cadena se almccena en el appsetings .json y se recupera aca para configurar la BD
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); // Estamos compartiendo la cadena de conexion a toda la API
@@ -35,6 +35,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var misReglasCors = "ReglasCors";
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(name: misReglasCors, builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 // Aqui se hace la configuracion de los servicios que realizan las tareas en la aplicacion, se registran los servicios que realizan operaciones relacionadas con la BD y la logica de la aplicacion
 
 builder.Services.AddScoped<IUsuariosService, UsuariosService>(); 
@@ -44,22 +53,32 @@ builder.Services.AddScoped<INoticiasService, NoticiasService>();
 builder.Services.AddScoped<IComentariosService, ComentariosService>();
 builder.Services.AddScoped<ICursoService, CursosService>();
 builder.Services.AddScoped<IClasesService, ClasesService>();
+builder.Services.AddScoped<IUsuarioCursoService, UsuarioCursoService>();
+builder.Services.AddScoped<IUsuarioClaseService, UsuarioClaseService>();
+builder.Services.AddScoped<ICursoClaseService, CursoClaseService>();
+//builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+builder.Services.AddScoped<IPagosService, PagosService>();
+builder.Services.AddScoped<INotaService, NotaService>();
+
 
 
 // Cuando el proyecto empiece a crecer, se utiliza los servicios, separandolo de la logica para que los controladores solo llamen al servicio y devolver la logica que el servicio ejecuta   
 
 var app = builder.Build();
 
-app.UseCors(MyAllowSpecificOrigins);
+//app.UseCors(MyAllowSpecificOrigins);
 
 // Se configura Swagger para documentar la API, que facilita la prueba de Endpoints de la API a traves de una interfaz web
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
 
+//}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
+app.UseCors(misReglasCors);
 // Configuracion de Middelwares necesarios para la aplicacion
 
 // Redirecciona las solicitudes a HTTPS para garantizar seguridad

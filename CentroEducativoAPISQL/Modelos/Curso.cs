@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CentroEducativoAPISQL.Modelos
 {
@@ -20,8 +21,11 @@ namespace CentroEducativoAPISQL.Modelos
         [StringLength(100)]
         public string? descripcion_curso { get; set; }
 
-        //[ForeignKey("id_usuario")]
-        public ICollection<Usuario>? Usuarios { get; set; }
-        public ICollection<Clase>? Clases { get; set; }
+        [JsonIgnore]
+        public ICollection<UsuarioCurso>? UsuariosCursos { get; set; }
+
+        [JsonIgnore]
+        public ICollection<CursoClase>? CursoClases { get; set; }
+
     }
 }

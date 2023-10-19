@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CentroEducativoAPISQL.Modelos
 {
@@ -20,14 +21,19 @@ namespace CentroEducativoAPISQL.Modelos
         [StringLength(50)]
         public string materia { get; set; }
 
-        public string? id_usuario { get; set; }
+        public string? id_profesor { get; set; }
 
-        [ForeignKey("id_usuario")] // Clave Foranea que establece la relacion entre la clase y el docente a cargo
-        public Usuario? Usuarios { get; set; }
+        [ForeignKey("id_profesor")]
+        public Usuario? Profesor { get; set; }
 
-        public int? id_curso { get; set; }
+        [JsonIgnore]
+        public ICollection<CursoClase>? CursoClases { get; set; }
 
-        [ForeignKey("id_curso")] // Clave Foranea que establece la relacion entre la clase y el curso en el que se dicta
-        public Curso? Curso { get; set; }
+        [JsonIgnore]
+        public ICollection<UsuarioClase>? UsuariosClases { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Nota>? Notas { get; set; }
+
     }
 }

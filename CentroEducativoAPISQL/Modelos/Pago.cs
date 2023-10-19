@@ -10,9 +10,14 @@ namespace CentroEducativoAPISQL.Modelos
         [Key]
         public int id_pago { get; set; }
 
+
         [Required]
         [StringLength(20)]
-        public int monto { get; set; }
+        public string nro_factura { get; set; } 
+
+        [Required]
+        [StringLength(20)]
+        public string monto { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -30,9 +35,9 @@ namespace CentroEducativoAPISQL.Modelos
         [StringLength(100)]
         public string concepto { get; set; }
 
-        public string id_usuario { get; set; }
+        public string? id_usuario { get; set; }
 
         [ForeignKey("id_usuario")] // Clave Foranea que establece la relacion entre el pago y el usuario que lo realizó
-        public Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
     }
 }

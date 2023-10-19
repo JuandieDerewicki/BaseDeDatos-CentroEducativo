@@ -2,6 +2,6 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ActiveDebugProfile>https</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>C:\Users\bocaj\OneDrive\Documentos\Facultad\ProyectoCentroEducativo\CentroEducativoPruebas\CentroEducativoAPISQL\Properties\PublishProfiles\CentroEducativo - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Users\bocaj\OneDrive\Documentos\Facultad\ProyectoCentroEducativo\CentroEducativoPruebas\CentroEducativoAPISQL\Properties\PublishProfiles\centroeducativoapi - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

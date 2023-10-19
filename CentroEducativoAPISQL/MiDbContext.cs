@@ -16,6 +16,13 @@ public class MiDbContext : DbContext
     public DbSet<Comentario> Comentarios { get; set; }
     public DbSet<Clase> Clases { get; set; }
     public DbSet<Pago> Pagos { get; set; }
+    public DbSet<UsuarioClase> UsuariosClases { get; set; }
+    public DbSet<UsuarioCurso> UsuariosCursos { get; set; }
+
+    public DbSet<CursoClase> CursoClases { get; set; }
+    public DbSet<Nota> Notas { get; set; }
+
+
 
     // El método OnModelCreating se anula para permitir la configuración personalizada del modelo y definir relaciones y restricciones. Aquí configuramos las relaciones entre las tablas utilizando Fluent API. 
     // Los metodos override son protected siempre 
@@ -62,13 +69,6 @@ public class MiDbContext : DbContext
             .HasForeignKey(c => c.id_noticia)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Relación Usuario-Curso (N a 1)
-        modelBuilder.Entity<Usuario>()
-            .HasOne(u => u.Cursos)
-            .WithMany(c => c.Usuarios)
-            .HasForeignKey(u => u.id_curso)
-            .OnDelete(DeleteBehavior.Restrict); // Evitar eliminación en cascada
-
         //// Relación Usuario-Pago (1 a N)
         modelBuilder.Entity<Usuario>()
             .HasMany(u => u.Pagos)
@@ -76,22 +76,75 @@ public class MiDbContext : DbContext
             .HasForeignKey(p => p.id_usuario)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Relación Usuario-Clase (N a 1)
-        modelBuilder.Entity<Usuario>()
-            .HasOne(u => u.clase)
-            .WithMany()
-            .HasForeignKey(u => u.id_clase) // Clave foránea en Usuario que apunta a la Clase
-            .OnDelete(DeleteBehavior.Restrict); // Evitar eliminación en cascada
+        // Configuración para la relación Usuario-Curso (muchos a muchos)
+        modelBuilder.Entity<UsuarioCurso>()
+            .HasKey(uc => new { uc.Dni, uc.IdCurso });
 
-        // Relación Clase-Curso (N a 1)
-        modelBuilder.Entity<Clase>()
-            .HasOne(c => c.Curso)
-            .WithMany(curso => curso.Clases)
-            .HasForeignKey(c => c.id_curso)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<UsuarioCurso>()
+            .HasOne(uc => uc.Usuario)
+            .WithMany(u => u.UsuariosCursos)
+            .HasForeignKey(uc => uc.Dni);
+
+        modelBuilder.Entity<UsuarioCurso>()
+            .HasOne(uc => uc.Curso)
+            .WithMany(c => c.UsuariosCursos)
+            .HasForeignKey(uc => uc.IdCurso);
+
+        // Configuración para la relación Usuario-Clase (muchos a muchos)
+        modelBuilder.Entity<UsuarioClase>()
+            .HasKey(uc => new { uc.Dni, uc.IdClase });
+
+        modelBuilder.Entity<UsuarioClase>()
+            .HasOne(uc => uc.Usuario)
+            .WithMany(u => u.UsuariosClases)
+            .HasForeignKey(uc => uc.Dni);
+
+        modelBuilder.Entity<UsuarioClase>()
+            .HasOne(uc => uc.Clase)
+            .WithMany(c => c.UsuariosClases)
+            .HasForeignKey(uc => uc.IdClase);
 
         //Las relaciones Usuarios y Comentarios, Usuarios y SolicitudesInscripcion, Usuarios y Noticias, Comentarios y Noticias,
         //y otras se configuran para definir las relaciones uno a muchos entre las tablas correspondientes.
+
+        // Configuración para la relación Curso-Clase (muchos a muchos)
+        modelBuilder.Entity<CursoClase>()
+            .HasKey(cc => new { cc.IdCurso, cc.IdClase });
+
+        modelBuilder.Entity<CursoClase>()
+            .HasOne(cc => cc.Curso)
+            .WithMany(c => c.CursoClases)
+            .HasForeignKey(cc => cc.IdCurso);
+
+        modelBuilder.Entity<CursoClase>()
+            .HasOne(cc => cc.Clase)
+            .WithMany(clase => clase.CursoClases)
+            .HasForeignKey(cc => cc.IdClase);
+
+        modelBuilder.Entity<Clase>()
+            .HasOne(c => c.Profesor)
+            .WithMany()
+            .HasForeignKey(c => c.id_profesor);
+
+        modelBuilder.Entity<Nota>()
+            .HasOne(n => n.Docente)
+            .WithMany(u => u.NotasComoDocente)
+            .HasForeignKey(n => n.id_docente)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Nota>()
+            .HasOne(n => n.Alumno)
+            .WithMany(u => u.NotasComoAlumno)
+            .HasForeignKey(n => n.id_alumno)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Nota>()
+            .HasOne(n => n.Clase)
+            .WithMany(c => c.Notas)
+            .HasForeignKey(n => n.id_clase)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
 
         // Restricción única en el campo correo de Usuarios
         modelBuilder.Entity<Usuario>()

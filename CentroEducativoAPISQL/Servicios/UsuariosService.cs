@@ -1,6 +1,8 @@
 ﻿using CentroEducativoAPISQL.Modelos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace CentroEducativoAPISQL.Servicios
 {
@@ -27,6 +29,7 @@ namespace CentroEducativoAPISQL.Servicios
             return await _context.Usuarios.Include(u => u.RolesUsuarios).FirstOrDefaultAsync(u => u.dni == documento);
         }
 
+     
         public async Task<Usuario> RegistrarUsuarioAsync(Usuario usuario, string tipoUsuario)
         {
             try
@@ -57,7 +60,7 @@ namespace CentroEducativoAPISQL.Servicios
                 // Asigna el rol al usuario
                 usuario.RolesUsuarios = rol;
 
-                // Crea el usuario en la base de datos
+                // Crea el usuario sin cifrar la contraseña
                 _context.Usuarios.Add(usuario);
                 await _context.SaveChangesAsync();
 
@@ -67,6 +70,35 @@ namespace CentroEducativoAPISQL.Servicios
             {
                 throw new Exception($"Error al registrar el usuario: {ex.Message}");
             }
+        }
+
+
+        public async Task<Usuario> IniciarSesionAsync(string correo, string contraseña)
+        {
+            // Busca un usuario por correo en la base de datos
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.correo == correo);
+
+            if (usuario == null)
+            {
+                // El correo no se encontró en la base de datos, el inicio de sesión falla
+                return null;
+            }
+
+            // Realiza la comparación de contraseñas sin cifrar
+            if (contraseña == usuario.contraseña)
+            {
+                // La contraseña coincide, puedes considerar que el inicio de sesión fue exitoso
+                return usuario;
+            }
+            else
+            {
+                // Agrega un registro de depuración para ver qué está ocurriendo
+                Console.WriteLine("Contraseña proporcionada: " + contraseña);
+                Console.WriteLine("Contraseña almacenada: " + usuario.contraseña);
+            }
+
+            // La contraseña no coincide
+            return null;
         }
 
 
@@ -110,6 +142,7 @@ namespace CentroEducativoAPISQL.Servicios
 
                 // Actualizar otras propiedades del usuario
                 usuarioExistente.nombreCompleto = usuario.nombreCompleto;
+                usuarioExistente.fechaNacimiento = usuario.fechaNacimiento;
                 usuarioExistente.contraseña = usuario.contraseña;
                 usuarioExistente.correo = usuario.correo;
                 usuarioExistente.telefono = usuario.telefono;
@@ -138,6 +171,8 @@ namespace CentroEducativoAPISQL.Servicios
             _context.Usuarios.Remove(usuarioExistente);
             await _context.SaveChangesAsync();
         }
+
+
     }
 
     //  define los métodos que debe implementar UsuariosService y proporciona una abstracción para interactuar con la entidad de Usuarios.
@@ -148,5 +183,8 @@ namespace CentroEducativoAPISQL.Servicios
         Task EliminarUsuarioAsync(string documento);
         Task<Usuario> RegistrarUsuarioAsync(Usuario usuario, string tipoUsuario);
         Task<Usuario> EditarUsuarioAsync(int dni, Usuario usuario);
+
+        Task<Usuario> IniciarSesionAsync(string correo, string contraseña);
+
     }
 }

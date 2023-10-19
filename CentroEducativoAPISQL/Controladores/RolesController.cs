@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using CentroEducativoAPISQL.Controllers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 
 namespace CentroEducativoAPISQL.Controladores
 {
+    [EnableCors("ReglasCors")]
     // El controlador RolesController es responsable de gestionar los roles
     [Route("api/[controller]")]
     [ApiController]

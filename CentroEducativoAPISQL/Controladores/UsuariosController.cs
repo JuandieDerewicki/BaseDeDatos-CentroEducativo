@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using CentroEducativoAPISQL.Servicios;
 using System.Text;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cors;
+using Auth0.ManagementApi.Models.Rules;
 
 // UsuariosController proporciona endpoints para realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en la entidad de usuarios utilizando los servicios proporcionados por UsuariosService. Cada acción del controlador corresponde a una operación específica en la entidad de usuarios.
 
 namespace CentroEducativoAPISQL.Controllers
 {
+    [EnableCors("ReglasCors")]
     [Route("api/[controller]")]
     [ApiController]
     // El controlador UsuariosController se encarga de gestionar las solicitudes relacionadas con los usuarios. 
@@ -69,14 +72,7 @@ namespace CentroEducativoAPISQL.Controllers
                     usuario.RolesUsuarios = rol;
                 }
 
-                // Realizar el hashing de la contraseña
-                using (var sha256 = SHA256.Create())
-                {
-                    var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(usuario.contraseña));
-                    usuario.contraseña = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
-                }
-
-                // Crear el usuario
+                // Crear el usuario sin cifrar la contraseña
                 var usuarioCreado = await _usuariosService.RegistrarUsuarioAsync(usuario, tipoUsuario);
 
                 return Ok(usuarioCreado);
@@ -84,6 +80,28 @@ namespace CentroEducativoAPISQL.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error al registrar el usuario: {ex.Message}");
+            }
+        }
+
+        [HttpPost("IniciarSesion")]
+        public async Task<ActionResult<Usuario>> IniciarSesionAsync(string correo, string contraseña)
+        {
+            try
+            {
+                var usuario = await _usuariosService.IniciarSesionAsync(correo, contraseña);
+
+                if (usuario == null)
+                {
+                    // El inicio de sesión falló
+                    return NotFound("Credenciales de inicio de sesión incorrectas.");
+                }
+
+                // El inicio de sesión fue exitoso; puedes devolver el usuario o cualquier otro dato necesario
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al iniciar sesión: {ex.Message}");
             }
         }
 
@@ -153,6 +171,8 @@ namespace CentroEducativoAPISQL.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+
 
 
     }

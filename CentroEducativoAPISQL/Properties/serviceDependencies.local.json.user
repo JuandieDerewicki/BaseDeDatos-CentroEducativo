@@ -1,0 +1,38 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "restored": true,
+      "restoreTime": "2023-10-17T00:21:36.6789148Z"
+    },
+    "secrets1": {
+      "restored": true,
+      "restoreTime": "2023-10-16T14:49:29.3175326Z"
+    },
+    "appInsights1": {
+      "restored": true,
+      "restoreTime": "2023-10-16T14:49:59.9939765Z"
+    }
+  },
+  "parameters": {
+    "mssql1.subscriptionId": {
+      "Name": "mssql1.subscriptionId",
+      "Type": "subscription",
+      "Value": "b24777aa-5be5-41f8-a69e-5e558039a11b"
+    },
+    "appInsights1.resourceGroupName": {
+      "Name": "appInsights1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "RecursosBDCentroEducativo"
+    },
+    "mssql1.resourceGroupName": {
+      "Name": "mssql1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "RecursosBDCentroEducativo"
+    },
+    "appInsights1.subscriptionId": {
+      "Name": "appInsights1.subscriptionId",
+      "Type": "subscription",
+      "Value": "b24777aa-5be5-41f8-a69e-5e558039a11b"
+    }
+  }
+}

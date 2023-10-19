@@ -1,4 +1,6 @@
 ﻿using CentroEducativoAPISQL.Modelos;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CentroEducativoAPISQL.Servicios
@@ -12,53 +14,45 @@ namespace CentroEducativoAPISQL.Servicios
             _context = context;
         }
 
-        // Método para obtener todos los cursos
         public async Task<IEnumerable<Curso>> ObtenerCursosAsync()
         {
             return await _context.Curso.ToListAsync();
         }
 
-        // Método para obtener un curso por su ID
         public async Task<Curso> ObtenerCursoPorIdAsync(int idCurso)
         {
             return await _context.Curso.FirstOrDefaultAsync(c => c.id_curso == idCurso);
         }
 
-       
+        //public async Task<IEnumerable<Usuario>> ObtenerAlumnosDelCursoAsync(int idCurso)
+        //{
+        //    var curso = await _context.Curso
+        //        .Include(c => c.UsuariosCursos)
+        //        .ThenInclude(uc => uc.Usuario)
+        //        .FirstOrDefaultAsync(c => c.id_curso == idCurso);
 
-        // Método para obtener los alumnos de un curso
-        public async Task<IEnumerable<Usuario>> ObtenerAlumnosDelCursoAsync(int idCurso)
-        {
-            var curso = await _context.Curso
-                .Include(c => c.Usuarios)
-                .FirstOrDefaultAsync(c => c.id_curso == idCurso);
-
-            if (curso != null)
-            {
-                return curso.Usuarios.Where(u => u.RolesUsuarios?.tipo_rol == "Alumno").ToList();
-            }
-            else
-            {
-                throw new KeyNotFoundException("El curso no existe.");
-            }
-        }
-
+        //    if (curso != null)
+        //    {
+        //        return curso.UsuariosCursos
+        //            .Where(uc => uc.Usuario.RolesUsuarios.tipo_rol == "Alumno")
+        //            .Select(uc => uc.Usuario)
+        //            .ToList();
+        //    }
+        //    else
+        //    {
+        //        throw new KeyNotFoundException("El curso no existe.");
+        //    }
+        //}
 
         //public List<Usuario> ObtenerAlumnosPorDocente(string docenteId)
         //{
         //    try
         //    {
-        //        var cursosDelDocente = _context.Curso
-        //            .Where(c => c.id_usuario == docenteId)
+        //        var alumnos = _context.UsuariosClases
+        //            .Where(uc => uc.Clase.UsuariosClases.Any(uc => uc.Usuario.dni == docenteId))
+        //            .Select(uc => uc.Usuario)
+        //            .Distinct()
         //            .ToList();
-
-        //        var alumnos = new List<Usuario>();
-
-        //        foreach (var curso in cursosDelDocente)
-        //        {
-        //            var alumnosDelCurso = curso.Usuarios.ToList();
-        //            alumnos.AddRange(alumnosDelCurso);
-        //        }
 
         //        return alumnos;
         //    }
@@ -68,41 +62,22 @@ namespace CentroEducativoAPISQL.Servicios
         //    }
         //}
 
-        public List<Usuario> ObtenerAlumnosPorDocente(string docenteId)
-        {
-            try
-            {
-                var alumnos = _context.Clases
-                    .Where(clase => clase.id_usuario == docenteId) // Filtrar por docente
-                    .SelectMany(clase => clase.Curso.Usuarios) // Obtener alumnos de los cursos relacionados con las clases
-                    .Distinct() // Eliminar duplicados
-                    .ToList();
+        //public List<Usuario> ObtenerAlumnosDeTodosLosCursos()
+        //{
+        //    try
+        //    {
+        //        var alumnos = _context.UsuariosCursos
+        //            .Select(uc => uc.Usuario)
+        //            .Distinct()
+        //            .ToList();
 
-                return alumnos;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los alumnos por docente.", ex);
-            }
-        }
-
-        public List<Usuario> ObtenerAlumnosDeTodosLosCursos()
-        {
-            try
-            {
-                // Obtiene todos los cursos y sus alumnos
-                var cursos = _context.Curso.Include(c => c.Usuarios).ToList();
-
-                // Extrae y concatena a todos los alumnos de todos los cursos
-                var alumnos = cursos.SelectMany(curso => curso.Usuarios).ToList();
-
-                return alumnos;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los alumnos de todos los cursos.", ex);
-            }
-        }
+        //        return alumnos;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al obtener los alumnos de todos los cursos.", ex);
+        //    }
+        //}
 
         public Curso ObtenerCursoPorNombre(string nombreCurso)
         {
@@ -117,128 +92,141 @@ namespace CentroEducativoAPISQL.Servicios
             }
         }
 
-        public List<Usuario> ObtenerAlumnosPorNombreDeCurso(string nombreCurso)
-        {
-            try
-            {
-                var curso = _context.Curso
-                    .Include(c => c.Usuarios)
-                    .FirstOrDefault(c => c.nombre_curso == nombreCurso);
+        //public List<Usuario> ObtenerAlumnosPorNombreDeCurso(string nombreCurso)
+        //{
+        //    try
+        //    {
+        //        var curso = _context.Curso
+        //            .Include(c => c.UsuariosCursos)
+        //            .ThenInclude(uc => uc.Usuario)
+        //            .FirstOrDefault(c => c.nombre_curso == nombreCurso);
 
-                if (curso == null)
-                {
-                    throw new KeyNotFoundException("Curso no encontrado");
-                }
+        //        if (curso == null)
+        //        {
+        //            throw new KeyNotFoundException("Curso no encontrado");
+        //        }
 
-                return curso.Usuarios.ToList();
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los alumnos por nombre de curso.", ex);
-            }
+        //        return curso.UsuariosCursos
+        //            .Select(uc => uc.Usuario)
+        //            .ToList();
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al obtener los alumnos por nombre de curso.", ex);
+        //    }
+        //}
 
-        }
+        //public List<Usuario> ObtenerAlumnosPorIdDeCurso(int idCurso)
+        //{
+        //    try
+        //    {
+        //        var curso = _context.Curso
+        //            .Include(c => c.UsuariosCursos)
+        //            .ThenInclude(uc => uc.Usuario)
+        //            .FirstOrDefault(c => c.id_curso == idCurso);
 
-        public List<Usuario> ObtenerAlumnosPorIdDeCurso(int idCurso)
-        {
-            try
-            {
-                var curso = _context.Curso
-                    .Include(c => c.Usuarios)
-                    .FirstOrDefault(c => c.id_curso == idCurso);
+        //        if (curso == null)
+        //        {
+        //            throw new KeyNotFoundException("Curso no encontrado");
+        //        }
 
-                if (curso == null)
-                {
-                    throw new KeyNotFoundException("Curso no encontrado");
-                }
+        //        return curso.UsuariosCursos
+        //            .Select(uc => uc.Usuario)
+        //            .ToList();
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al obtener los alumnos por ID de curso.", ex);
+        //    }
+        //}
 
-                return curso.Usuarios.ToList();
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los alumnos por ID de curso.", ex);
-            }
-        }
+        //public Usuario BuscarAlumnoPorDNIEnCurso(string dni, int idCurso)
+        //{
+        //    try
+        //    {
+        //        var curso = _context.Curso
+        //            .Include(c => c.UsuariosCursos)
+        //            .ThenInclude(uc => uc.Usuario)
+        //            .FirstOrDefault(c => c.id_curso == idCurso);
 
-        public Usuario BuscarAlumnoPorDNIEnCurso(string dni, int idCurso)
-        {
-            try
-            {
-                var curso = _context.Curso
-                    .Include(c => c.Usuarios)
-                    .FirstOrDefault(c => c.id_curso == idCurso);
+        //        if (curso == null)
+        //        {
+        //            throw new KeyNotFoundException("Curso no encontrado");
+        //        }
 
-                if (curso == null)
-                {
-                    throw new KeyNotFoundException("Curso no encontrado");
-                }
+        //        var alumno = curso.UsuariosCursos
+        //            .Where(uc => uc.Usuario.dni == dni)
+        //            .Select(uc => uc.Usuario)
+        //            .FirstOrDefault();
 
-                var alumno = curso.Usuarios.FirstOrDefault(u => u.dni == dni);
+        //        return alumno;
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al buscar al alumno por DNI en el curso.", ex);
+        //    }
+        //}
 
-                return alumno;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al buscar al alumno por DNI en el curso.", ex);
-            }
-        }
+        //public Usuario BuscarAlumnoEnCualquierCurso(string dni)
+        //{
+        //    try
+        //    {
+        //        var alumno = _context.UsuariosCursos
+        //            .Where(uc => uc.Usuario.dni == dni)
+        //            .Select(uc => uc.Usuario)
+        //            .FirstOrDefault();
 
-        public Usuario BuscarAlumnoEnCualquierCurso(string dni)
-        {
-            try
-            {
-                // Busca al alumno en todos los cursos
-                var cursos = _context.Curso.Include(c => c.Usuarios).ToList();
-                var alumno = cursos.SelectMany(curso => curso.Usuarios).FirstOrDefault(u => u.dni == dni);
+        //        return alumno;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al buscar al alumno en cualquier curso.", ex);
+        //    }
+        //}
 
-                return alumno;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al buscar al alumno en cualquier curso.", ex);
-            }
-        }
+        //public List<Usuario> ObtenerProfesoresPorCurso(int idCurso)
+        //{
+        //    try
+        //    {
+        //        var curso = _context.Curso
+        //            .Include(c => c.UsuariosCursos)
+        //            .ThenInclude(uc => uc.Usuario)
+        //            .FirstOrDefault(c => c.id_curso == idCurso);
 
-        public List<Usuario> ObtenerProfesoresPorCurso(int idCurso)
-        {
-            try
-            {
-                var curso = _context.Curso
-                    .Include(c => c.Usuarios)
-                    .FirstOrDefault(c => c.id_curso == idCurso);
+        //        if (curso == null)
+        //        {
+        //            throw new KeyNotFoundException("Curso no encontrado");
+        //        }
 
-                if (curso == null)
-                {
-                    throw new KeyNotFoundException("Curso no encontrado");
-                }
+        //        var profesores = curso.UsuariosCursos
+        //            .Where(uc => uc.Usuario.RolesUsuarios.tipo_rol == "Profesor")
+        //            .Select(uc => uc.Usuario)
+        //            .ToList();
 
-                var profesores = curso.Usuarios.Where(u => u.id_rol == 3).ToList();
+        //        return profesores;
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al obtener profesores por curso.", ex);
+        //    }
+        //}
 
-                return profesores;
-            }
-            catch (KeyNotFoundException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener profesores por curso.", ex);
-            }
-        }
-
-        // Método para agregar un nuevo curso
         public async Task<Curso> AgregarCursoAsync(Curso curso)
         {
             _context.Curso.Add(curso);
@@ -246,27 +234,37 @@ namespace CentroEducativoAPISQL.Servicios
             return curso;
         }
 
-        // Método para editar información de un curso
-        public async Task<Curso> EditarCursoAsync(int idCurso, Curso curso)
+        public async Task<string> EditarCursoAsync(int idCurso, Curso curso)
         {
-            if (idCurso != curso.id_curso)
+            var existingCurso = await _context.Curso
+                .Include(c => c.UsuariosCursos)
+                .FirstOrDefaultAsync(c => c.id_curso == idCurso);
+
+            if (existingCurso == null)
             {
-                throw new Exception("El ID del curso no coincide con el curso proporcionado.");
+                return "Curso no encontrado.";
             }
 
-            _context.Entry(curso).State = EntityState.Modified;
+            existingCurso.nombre_curso = curso.nombre_curso;
+            existingCurso.aula = curso.aula;
+            existingCurso.descripcion_curso = curso.descripcion_curso;
+
+            // Actualiza las relaciones con usuarios
+            existingCurso.UsuariosCursos = curso.UsuariosCursos;
+
+            _context.Entry(existingCurso).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return curso;
+
+            return "Curso actualizado correctamente.";
         }
 
-        // Método para eliminar un curso
         public async Task<string> EliminarCursoAsync(int idCurso)
         {
             var curso = await _context.Curso.FindAsync(idCurso);
 
             if (curso == null)
             {
-                throw new KeyNotFoundException("Curso no encontrado");
+                return "Curso no encontrado.";
             }
 
             _context.Curso.Remove(curso);
@@ -274,26 +272,24 @@ namespace CentroEducativoAPISQL.Servicios
 
             return "Curso eliminado con éxito.";
         }
-
     }
 
     public interface ICursoService
     {
         Task<IEnumerable<Curso>> ObtenerCursosAsync();
         Task<Curso> ObtenerCursoPorIdAsync(int idCurso);
-        Task<IEnumerable<Usuario>> ObtenerAlumnosDelCursoAsync(int idCurso);
-        List<Usuario> ObtenerAlumnosPorDocente(string docenteId);
-        List<Usuario> ObtenerAlumnosDeTodosLosCursos();
+        //Task<IEnumerable<Usuario>> ObtenerAlumnosDelCursoAsync(int idCurso);
+        //List<Usuario> ObtenerAlumnosPorDocente(string docenteId);
+        //List<Usuario> ObtenerAlumnosDeTodosLosCursos();
         Curso ObtenerCursoPorNombre(string nombreCurso);
-        List<Usuario> ObtenerAlumnosPorNombreDeCurso(string nombreCurso);
-        List<Usuario> ObtenerAlumnosPorIdDeCurso(int idCurso);
-        Usuario BuscarAlumnoPorDNIEnCurso(string dni, int idCurso);
-        Usuario BuscarAlumnoEnCualquierCurso(string dni);
-        List<Usuario> ObtenerProfesoresPorCurso(int idCurso);
+        //List<Usuario> ObtenerAlumnosPorNombreDeCurso(string nombreCurso);
+        //List<Usuario> ObtenerAlumnosPorIdDeCurso(int idCurso);
+        //Usuario BuscarAlumnoPorDNIEnCurso(string dni, int idCurso);
+        //Usuario BuscarAlumnoEnCualquierCurso(string dni);
+        //List<Usuario> ObtenerProfesoresPorCurso(int idCurso);
         Task<Curso> AgregarCursoAsync(Curso curso);
-        Task<Curso> EditarCursoAsync(int idCurso, Curso curso);
+        Task<string> EditarCursoAsync(int idCurso, Curso curso);
         Task<string> EliminarCursoAsync(int idCurso);
-
     }
-}
 
+}
