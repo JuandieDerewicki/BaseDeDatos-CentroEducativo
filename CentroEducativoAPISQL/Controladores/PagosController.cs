@@ -158,6 +158,26 @@ namespace CentroEducativoAPISQL.Controladores
             }
         }
 
+        [HttpGet("generar-pdf/{idPago}")]
+        public async Task<IActionResult> GenerarPdf(int idPago)
+        {
+            try
+            {
+                var pdfData = await _pagosService.GenerarDocumento(idPago);
+                if (pdfData == null)
+                {
+                    return NotFound(); // O manejar el caso en el que no se encuentra el pago
+                }
+
+                return File(pdfData, "application/pdf", "factura.pdf");
+            }
+            catch (Exception ex)
+            {
+                // Maneja las excepciones según tus necesidades
+                return BadRequest("Ocurrió un error al generar el PDF.");
+            }
+        }
+
 
     }
 }

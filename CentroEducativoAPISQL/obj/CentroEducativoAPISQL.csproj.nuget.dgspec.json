@@ -42,29 +42,29 @@
           "dependencies": {
             "Auth0.ManagementApi": {
               "target": "Package",
-              "version": "[7.22.3, )"
+              "version": "[7.23.1, )"
             },
             "Microsoft.ApplicationInsights.AspNetCore": {
               "target": "Package",
-              "version": "[2.15.0, )"
+              "version": "[2.21.0, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[7.0.12, )"
+              "version": "[7.0.13, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.10, )"
+              "version": "[7.0.12, )"
             },
             "Microsoft.Extensions.ApiDescription.Server": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -74,7 +74,11 @@
             },
             "PDFsharp": {
               "target": "Package",
-              "version": "[1.50.5147, )"
+              "version": "[6.0.0, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2023.10.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

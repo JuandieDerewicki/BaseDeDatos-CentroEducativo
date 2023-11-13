@@ -2,6 +2,12 @@
 using iTextSharp.text.pdf;
 using iTextSharp.text;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using QuestPDF.Previewer;
+using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CentroEducativoAPISQL.Servicios
 {
@@ -67,6 +73,128 @@ namespace CentroEducativoAPISQL.Servicios
             _context.Pagos.Remove(pago);
             await _context.SaveChangesAsync();
         }
+
+
+        public async Task<byte[]> GenerarDocumento(int idPago)
+        {
+            var pago = await _context.Pagos
+                .Include(p => p.Usuario)
+                .FirstOrDefaultAsync(p => p.id_pago == idPago);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var data = QuestPDF.Fluent.Document.Create(document =>
+                {
+                    document.Page(page =>
+                    {
+                        
+                        page.Margin(30);
+
+                        page.Header().Row(row =>
+                        {
+                            string imagePath = @"https://i.imgur.com/RyVmq11.jpg";
+
+                            //row.ConstantItem(140).Height(60).Placeholder();
+                            row.ConstantItem(150).Image(imagePath);
+
+
+                            row.RelativeItem().Column(col =>
+                            {
+                                col.Item().AlignCenter().Text("Centro Educativo - Educar Para Transformar").Bold().FontSize(14);
+                                col.Item().AlignCenter().Text("Marcelo T. Alvear 9676 - Resistencia, Chaco").FontSize(9);
+                                col.Item().AlignCenter().Text("3624-541290").Bold().FontSize(14);
+                                col.Item().AlignCenter().Text("educarparatransformar@gmail.com").Bold().FontSize(14);
+                            });
+
+                            row.RelativeItem().Column(col =>
+                            {
+                                col.Item().Background("#257272").Border(1).BorderColor("#257272").AlignCenter().Text($"Factura: {pago.nro_factura}").FontColor("#fff");
+                                col.Item().Border(1).BorderColor("#257272").AlignCenter().Text("CUIT: 30000000000000007");
+                                col.Item().Border(1).BorderColor("#257272").AlignCenter().Text("Responsable Inscripto");
+                                col.Item().Border(1).BorderColor("#257272").AlignCenter().Text($"Fecha de emisión: {pago.fecha_pago}");
+                            });
+
+
+                        });
+
+                        page.Content().PaddingVertical(15).Column(col1 =>
+                        {
+
+                            col1.Item().Column(col2 =>
+                            {
+                                col2.Item().Text("Datos del cliente:").Underline().Bold();
+
+                                col2.Item().Text(txt =>
+                                {
+                                    txt.Span("Nombre y apellido:").SemiBold().FontSize(10);
+                                    txt.Span($"{pago.Usuario.nombreCompleto}").FontSize(10);
+                                });
+                                col2.Item().Text(txt =>
+                                {
+                                    txt.Span("Documento:").SemiBold().FontSize(10);
+                                    txt.Span($"{pago.Usuario.dni}").FontSize(10);
+                                });
+                                col2.Item().Text(txt =>
+                                {
+                                    txt.Span("Teléfono:").SemiBold().FontSize(10);
+                                    txt.Span($"{pago.Usuario.telefono}").FontSize(10);
+                                });
+                                col2.Item().Text(txt =>
+                                {
+                                    txt.Span("Correo:").SemiBold().FontSize(10);
+                                    txt.Span($"{pago.Usuario.correo}").FontSize(10);
+                                });
+                            });
+
+
+                            col1.Item().LineHorizontal(0.5f);
+
+                            col1.Item().Table(tabla =>
+                            {
+                                tabla.ColumnsDefinition(columns =>
+                                {
+                                    columns.RelativeColumn(3);
+                                    columns.RelativeColumn();
+                                    columns.RelativeColumn();
+                                    columns.RelativeColumn();
+                                });
+
+                                tabla.Header(header =>
+                                {
+                                    header.Cell().Background("#257272").Padding(2).Text("Concepto").FontColor("#fff");
+                                    header.Cell().Background("#257272").Padding(2).Text("Tipo de pago").FontColor("#fff");
+                                    header.Cell().Background("#257272").Padding(2).Text("Fecha de vencimiento").FontColor("#fff");
+                                    header.Cell().Background("#257272").Padding(2).Text("Monto total").FontColor("#fff");
+                                });
+
+                                tabla.Cell().BorderBottom(0.5f).BorderColor("#D9D9D9").Padding(2).Text($"{pago.concepto}").FontSize(10);
+                                tabla.Cell().BorderBottom(0.5f).BorderColor("#D9D9D9").Padding(2).Text($"{pago.tipo_pago}").FontSize(10);
+                                tabla.Cell().BorderBottom(0.5f).BorderColor("#D9D9D9").Padding(2).Text($"{pago.fecha_vencimiento}").FontSize(10);
+                                tabla.Cell().BorderBottom(0.5f).BorderColor("#D9D9D9").Padding(2).Text($"{pago.monto}").FontSize(10);
+
+                                col1.Item().AlignRight().Text($"Total: {pago.monto}").FontSize(12);
+
+                                col1.Spacing(10);
+                            });
+
+                        });
+
+                        page.Footer().AlignRight().Text(txt =>
+                        {
+                            txt.Span("Pagina").FontSize(10);
+                            txt.CurrentPageNumber().FontSize(10);
+                            txt.Span(" de ").FontSize(10);
+                            txt.TotalPages().FontSize(10);
+                        });
+                    });
+                }).GeneratePdf();
+
+                return ms.ToArray();
+            }
+            //Stream stream = new MemoryStream(data);
+            //return File(stream,"application/pdf","detallefactura.pdf");
+        }
+
 
 
         public async Task<byte[]> GenerarFacturaPagoPDFAsync(int idPago)
@@ -159,7 +287,7 @@ namespace CentroEducativoAPISQL.Servicios
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    Document doc = new Document();
+                    iTextSharp.text.Document doc = new iTextSharp.text.Document();
                     PdfWriter writer = PdfWriter.GetInstance(doc, ms);
                     doc.Open();
 
@@ -213,7 +341,7 @@ namespace CentroEducativoAPISQL.Servicios
 
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    using (Document doc = new Document())
+                    using (iTextSharp.text.Document doc = new iTextSharp.text.Document())
                     {
                         PdfWriter writer = PdfWriter.GetInstance(doc, ms);
                         doc.Open();
@@ -299,5 +427,6 @@ namespace CentroEducativoAPISQL.Servicios
             Task<List<Usuario>> ObtenerUsuariosSinPagosAsync();
 
             Task<byte[]> GenerarInformeIngresosPDFAsync();
+            Task<byte[]> GenerarDocumento(int idPago);
     }
 }
